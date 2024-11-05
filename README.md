@@ -16,6 +16,9 @@ After reaching the MQTT broker, those data will be stored by an indipendent Node
 This system will work with the following needed setup:
 - Charge controller with serial port communication RS-485 using Modbus protocol
 - ESP32 and related Stripboard for wiring up all components
+- - MAX-485 board
+  - Ethernet port
+  - Wires, pin header
 - Ethernet cable
 - USB cable (just for first code upload)
 - WiFi router with internet access
