@@ -21,7 +21,7 @@ This system will work with the following needed setup:
 - WiFi router with internet access
 - PC / Raspberry Pi with Node-RED installed and internet connection
 
-To obtain a working system::
+To obtain a working system:
 1) Have a solar running system with a charge controller integrated with serial communication port (Modbus over RS-485)
 2) Have a router WiFi with known SSID and password
 3) Create the stripboard for ESP32 in order to connect the Ethernet cable
