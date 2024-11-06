@@ -1,13 +1,19 @@
 #include <Arduino.h>
 #include <solarModbus.hpp>
-#include "solarModbus_setup.hpp"
 
-SolarModbus::SolarModbus(Stream &serial) {
-    pinMode(PIN_RE_DE, OUTPUT);
-    digitalWrite(PIN_RE_DE, LOW);
+uint8_t SolarModbus::_pin_re_de = 0;
 
-    SERIAL_STREAM.begin(SERIAL_STREAM_SPEED, SERIAL_8N1, PIN_RO, PIN_DI);
-    this->node.begin(MODBUS_ID, serial);
+SolarModbus::SolarModbus(uint8_t pin_re_de, uint8_t pin_di, uint8_t pin_ro,
+                int nIter, uint8_t modbus_id, int serial_speed,
+                Stream &serial, HardwareSerial serial_stream) {
+    this->_pin_re_de = pin_re_de;
+    this->_nIter = nIter;
+
+    pinMode(_pin_re_de, OUTPUT);
+    digitalWrite(_pin_re_de, LOW);
+
+    serial_stream.begin(serial_speed, SERIAL_8N1, pin_ro, pin_di);
+    this->node.begin(modbus_id, serial);
     this->node.preTransmission(setPin);
     this->node.postTransmission(resetPin);
 }
@@ -68,7 +74,7 @@ void SolarModbus::exceptionHandler(uint8_t result, String mode, String address) 
 uint8_t SolarModbus::writeMultipleRegisters(uint16_t *data, uint16_t address, uint8_t nReg) {
     uint8_t result = 255;
     int iter = 0;
-    while(result != 0 and iter < nIter) {
+    while(result != 0 and iter < _nIter) {
         for(int i = 0; i < sizeof(data)/sizeof(uint16_t); i++) {
             this->node.setTransmitBuffer(i, data[i]);
         }
@@ -82,7 +88,7 @@ uint8_t SolarModbus::writeMultipleRegisters(uint16_t *data, uint16_t address, ui
 uint8_t SolarModbus::writeSingleCoil(uint16_t data, uint16_t address) {
     uint8_t result = 255;
     int iter = 0;
-    while (result != 0 and iter < nIter) {
+    while (result != 0 and iter < _nIter) {
         result = this->node.writeSingleCoil(address, data);
         iter++;
     }
@@ -93,7 +99,7 @@ uint8_t SolarModbus::writeSingleCoil(uint16_t data, uint16_t address) {
 uint8_t SolarModbus::readCoils(uint16_t address, void *variable) {
     uint8_t result = 255;
     int iter = 0;
-    while (result != 0 and iter < nIter) {
+    while (result != 0 and iter < _nIter) {
         result = this->node.readCoils(address, 1);
         iter++;
     }
@@ -108,7 +114,7 @@ uint8_t SolarModbus::readCoils(uint16_t address, void *variable) {
 uint8_t SolarModbus::readHoldingRegisters(uint16_t address, void *variable, uint8_t nReg) {
     uint8_t result = 255;
     int iter = 0;
-    while (result != 0 and iter < nIter) {
+    while (result != 0 and iter < _nIter) {
         result = this->node.readHoldingRegisters(address, nReg);
         iter++;
     }
@@ -123,7 +129,7 @@ uint8_t SolarModbus::readHoldingRegisters(uint16_t address, void *variable, uint
 uint8_t SolarModbus::readInputRegisters(uint16_t address, void *variable, uint8_t nReg, bool oneHundredTimes) {
     uint8_t result = 255;
     int iter = 0;
-    while (result != 0 and iter < nIter) {
+    while (result != 0 and iter < _nIter) {
         result = this->node.readInputRegisters(address, nReg);
         iter++;
     }
@@ -142,7 +148,7 @@ uint8_t SolarModbus::readInputRegisters(uint16_t address, void *variable, uint8_
 uint8_t SolarModbus::readSingleInputRegisters(uint16_t address, void *variable, bool oneHundredTimes) {
     uint8_t result = 255;
     int iter = 0;
-    while (result != 0 and iter < nIter) {
+    while (result != 0 and iter < _nIter) {
         result = this->node.readInputRegisters(address, 1);
         iter++;
     }
@@ -158,7 +164,7 @@ uint8_t SolarModbus::readSingleInputRegisters(uint16_t address, void *variable, 
 uint8_t SolarModbus::readDiscreteInputs(uint16_t address, void *variable) {
     uint8_t result = 255;
     int iter = 0;
-    while (result != 0 and iter < nIter) {
+    while (result != 0 and iter < this->_nIter) {
         result = this->node.readDiscreteInputs(address, 1);
         iter++;
     }
@@ -170,9 +176,9 @@ uint8_t SolarModbus::readDiscreteInputs(uint16_t address, void *variable) {
 }
 
 void SolarModbus::setPin() {
-    digitalWrite(PIN_RE_DE, HIGH);
+    digitalWrite(_pin_re_de, HIGH);
 }
 
 void SolarModbus::resetPin() {
-    digitalWrite(PIN_RE_DE, LOW);
+    digitalWrite(_pin_re_de, LOW);
 }

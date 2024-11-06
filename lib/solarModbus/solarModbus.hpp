@@ -3,7 +3,12 @@
 class SolarModbus {
 public:
     ModbusMaster node;
-    SolarModbus(Stream &serial = Serial2);
+    int _nIter;
+    static uint8_t _pin_re_de;
+
+    SolarModbus(uint8_t pin_re_de, uint8_t pin_di, uint8_t pin_ro,
+                int nIter = 2, uint8_t modbus_id = 0x01, int serial_speed = 9600,
+                Stream &serial = Serial2, HardwareSerial serial_stream = Serial2);
     uint8_t writeSingleCoil(uint16_t data, uint16_t address);
     uint8_t readCoils(uint16_t address, void *variable);
     uint8_t writeMultipleRegisters(uint16_t *data, uint16_t address, uint8_t nReg);

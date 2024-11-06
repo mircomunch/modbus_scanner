@@ -3,8 +3,8 @@
 #define PIN_DI 17
 #define PIN_RO 16
 
-// Number of tentatives for each readings 
-#define nIter 4
+// Number of tentatives for each readings
+#define nIter 2
 
 // Modbus serial comunication
 #define SERIAL_STREAM Serial2
