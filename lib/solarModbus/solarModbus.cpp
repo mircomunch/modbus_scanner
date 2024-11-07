@@ -1,19 +1,24 @@
-#include <Arduino.h>
 #include <solarModbus.hpp>
 
-uint8_t SolarModbus::_pin_re_de = 0;
+uint8_t SolarModbus::_pin_re_de;
 
 SolarModbus::SolarModbus(uint8_t pin_re_de, uint8_t pin_di, uint8_t pin_ro,
                 int nIter, uint8_t modbus_id, int serial_speed,
-                Stream &serial, HardwareSerial serial_stream) {
+                Stream &serial, HardwareSerial &serial_stream) {
     this->_pin_re_de = pin_re_de;
     this->_nIter = nIter;
+    this->_pin_di = pin_di;
+    this->_pin_ro = pin_ro;
+    this->_modbus_id = modbus_id;
+    this->_serial_speed = serial_speed;
+    this->_serial = serial;
+    this->_serial_stream = serial_stream;
 
     pinMode(_pin_re_de, OUTPUT);
     digitalWrite(_pin_re_de, LOW);
 
-    serial_stream.begin(serial_speed, SERIAL_8N1, pin_ro, pin_di);
-    this->node.begin(modbus_id, serial);
+    _serial_stream.begin(_serial_speed, SERIAL_8N1, _pin_ro, _pin_di);
+    this->node.begin(_modbus_id, _serial);
     this->node.preTransmission(setPin);
     this->node.postTransmission(resetPin);
 }
