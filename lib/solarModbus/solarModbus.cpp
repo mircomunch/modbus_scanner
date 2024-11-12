@@ -67,13 +67,11 @@ String SolarModbus::exceptionDescription(uint8_t exception) {
 //     return "";
 // }
 
-void SolarModbus::exceptionHandler(uint8_t result, String mode, String address) {
-    if (result != 0) {
-        #ifdef DEBUG
-            SERIAL_DEBUG.println(mode + " (" + address + "): " + this->exceptionDescription(result));
-        #endif
-    }
-}
+// void SolarModbus::exceptionHandler(uint8_t result, String mode, String address) {
+//     if (result != 0) {
+//         Serial.println(mode + " (" + address + "): " + this->exceptionDescription(result));
+//     }
+// }
 
 /* Modbus function 0x10 */
 uint8_t SolarModbus::writeMultipleRegisters(uint16_t *data, uint16_t address, uint8_t nReg) {
