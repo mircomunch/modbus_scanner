@@ -4,24 +4,27 @@
 
 class MQTT
 {
-    WiFiClientSecure _securedClient;
-    WiFiClient _unsecuredClient;
-    String _board_id;
-    char* _host;
-    uint16_t _port;
-    int _msg_size;
-    bool _cert_en;
-    char* _user;
-    char* _psw;
+	WiFiClientSecure _securedClient;
+	WiFiClient _unsecuredClient;
+	String _board_id;
+	char* _host;
+	uint16_t _port;
+	int _msg_size;
+	bool _cert_en;
+	char* _user;
+	char* _psw;
 
 public:
-    PubSubClient client;
-    MQTT(String board_id, char* host, uint16_t port);
-    MQTT(String board_id, char* host, uint16_t port, int msg_size);
-    MQTT(String board_id, char* host, uint16_t port, int msg_size, bool cert_en, char* user, char* psw);
+	PubSubClient client;
+	MQTT(String board_id, char* host, uint16_t port);
+	MQTT(String board_id, char* host, uint16_t port, int msg_size);
+	MQTT(String board_id, char* host, uint16_t port, int msg_size, bool cert_en, char* user, char* psw);
     void reconnect();
-    bool publishMessage(const char *topic, String payload, boolean retained);
-    bool setMessageSize(uint16_t size);
+    // boolean reconnect();
+	bool publishMessage(const char *topic, String payload, boolean retained);
+	bool setMessageSize(uint16_t size);
+	// bool subscribe(const char* topic);
+	// void setSubCallback(std:function void (char*, uint8_t*, u_int) callback);
 };
 
 static const char *root_ca PROGMEM = R"EOF(
