@@ -19,8 +19,8 @@ public:
 	MQTT(String board_id, char* host, uint16_t port);
 	MQTT(String board_id, char* host, uint16_t port, int msg_size);
 	MQTT(String board_id, char* host, uint16_t port, int msg_size, bool cert_en, char* user, char* psw);
-    void reconnect();
-    // boolean reconnect();
+    // void reconnect();
+    boolean reconnect();
 	bool publishMessage(const char *topic, String payload, boolean retained);
 	bool setMessageSize(uint16_t size);
 	// bool subscribe(const char* topic);

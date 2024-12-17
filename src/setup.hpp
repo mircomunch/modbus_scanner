@@ -24,7 +24,7 @@
 #define MQTT_TOPIC "modbus_scanner/"
 #define MQTT_PUBLISH_TOPIC MQTT_TOPIC "data"
 #define MQTT_DATETIME_TOPIC MQTT_TOPIC "datetime"
-#define MQTT_PUBLISH_MESSAGE_SIZE 1024
+#define MQTT_PUBLISH_MESSAGE_MAX_SIZE 65536/2 // MQTT publish max size = 256MB
 #define MQTT_QOS_SUB 1
 
 
