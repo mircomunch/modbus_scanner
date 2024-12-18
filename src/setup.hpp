@@ -9,7 +9,7 @@
 #define PUBLISH_PERIOD 2000
 
 // MQTT configurations
-#define MQTT_AUTH
+// #define MQTT_AUTH
 #ifdef MQTT_AUTH
 	#define MQTT_HOST "350fd0725fa14a069e04d387121e69f7.s2.eu.hivemq.cloud"
 	#define MQTT_PORT 8883

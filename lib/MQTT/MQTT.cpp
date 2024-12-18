@@ -73,17 +73,17 @@ MQTT::MQTT(String board_id, char* host, uint16_t port, int msg_size, bool cert_e
 
 boolean MQTT::reconnect()
 {
-	Serial.print("Attempting MQTT connection…");
+	Serial.print("Attempting MQTT connection… ");
 	String clientId = this->_board_id;
 	clientId += String(random(0xffff), HEX); // Create a random client ID
 
 	// Attempt to connect
 	if(this->_user && this->_psw) {
-		Serial.println("authenticated connection");
+		Serial.println("authenticated");
 		this->client.connect(clientId.c_str(), this->_user, this->_psw);
 	}
 	else {
-		Serial.println("un-authenticated connection");
+		Serial.println("un-authenticated");
 		this->client.connect(clientId.c_str());
 	}
 	return client.connected();
@@ -93,13 +93,3 @@ boolean MQTT::publishMessage(const char *topic, String payload, boolean retained
 {
     return this->client.publish(topic, payload.c_str(), retained);
 }
-
-bool MQTT::setMessageSize(uint16_t size)
-{
-    return this->client.setBufferSize(size);
-}
-
-// bool MQTT::subscribe(const char* topic)
-// {
-//     return this->client.subscribe(topic);
-// }

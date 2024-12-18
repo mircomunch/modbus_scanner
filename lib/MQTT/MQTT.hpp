@@ -22,9 +22,7 @@ public:
     // void reconnect();
     boolean reconnect();
 	bool publishMessage(const char *topic, String payload, boolean retained);
-	bool setMessageSize(uint16_t size);
-	// bool subscribe(const char* topic);
-	// void setSubCallback(std:function void (char*, uint8_t*, u_int) callback);
+
 };
 
 static const char *root_ca PROGMEM = R"EOF(
