@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<link rel='icon' href='/favicon.ico' sizes='any'>
+	<title>ESP32 Configuration</title>
+	<style>
+		html{
+			font-family: Helvetica;
+			display: inline-block;
+			margin: 0px auto;
+			text-align: center;}
+		body {margin-top: 30px;}
+		p {
+			font-size: 14px;
+			color: #888;
+			margin-bottom: 10px;}
+		h2 {color: #444444;margin: 20px auto 20px;}
+		.form-text {
+			font-size: 14px;
+			color: #444444;}
+		.button {
+			display: inline-block;
+			width: auto;
+			background-color: #008B8B;
+			border: none;
+			color: white;
+			padding: 15px 30px;
+			text-decoration: none;
+			font-size: 15px;
+			margin: 0px auto 25px;
+			cursor: pointer;
+			border-radius: 10px;}
+		.button:hover {
+			background: #004d4d;}
+		input[type=file]::file-selector-button {
+			margin-right: 20px;
+			border: none;
+			background: #008B8B;
+			padding: 10px 20px;
+			border-radius: 10px;
+			color: #fff;
+			cursor: pointer;
+			transition: background .2s ease-in-out;}
+		input[type=file]::file-selector-button:hover {
+			background: #004d4d;}
+		.prg-div {
+			font-size: 14px;
+			color: #444444;}
+	</style>
+</head>
+<body>
+	<h2>System info</h2>
+	<h4>Current time: {{plh_current_time}}</h4>
+	<h4>Last address read: {{plh_last_address}}</h4>
+	<h4>Wi-Fi status: {{plh_wifi_status}}</h4>
+	<a href="/" class="button">Refresh</a>
+	
+	<hr>
+	
+	<h2>Configure Wi-Fi credentials</h2>
+
+	<form action="/change-wifi">
+		<label for="ssid" class="form-text">SSID:</label><br>
+		<input type="text" id="ssid" name="ssid" ><br><br>
+		<label for="psw" class="form-text">Password:</label><br>
+		<input type="text" id="psw" name="psw"><br><br>
+		<input type="submit" value="Change" class="button">
+	</form>
+
+	<p>If you click the "Change" button, the ESP32 will be restarted and will search for the new Wi-Fi network</p>
+	
+	<hr>
+
+	<h2>Update Firmware</h2>
+	<p>Note: Update a fimrware with the Over-the-air feature in order to keep it maintainable</p><br>
+	
+	<form method='POST' enctype='multipart/form-data' id='upload-form'>
+		<input type='file' id="file" name='update'><br><br>
+		<input type='submit' value='Update' class="button button-update">
+    </form>
+	<div id='prg' class="prg-div"></div>
+</body>
+
+<script>
+	var prg = document.getElementById('prg');
+	var form = document.getElementById('upload-form');
+	form.addEventListener('submit', el=>{
+	  prg.style.backgroundColor = '#888';
+	  el.preventDefault();
+	  var data = new FormData(form);
+	  var req = new XMLHttpRequest();
+	  var fsize = document.getElementById('file').files[0].size;
+	  req.open('POST', '/update-firmware?size=' + fsize);
+	  req.upload.addEventListener('progress', p=>{
+		let w = Math.round(p.loaded/p.total*100) + '%';
+		  if(p.lengthComputable){
+			 prg.innerHTML = w;
+			 prg.style.width = w;
+		  }
+		  if(w == '100%') prg.style.backgroundColor = '#008B8B';
+	  });
+	  req.send(data);
+	 });
+</script>
+</html>

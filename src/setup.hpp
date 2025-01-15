@@ -1,15 +1,25 @@
 // ESP32 Name
-#define BOARD_ID "esp32_mirco"
+#define BOARD_ID "esp32_ccScanner"
 
 // WiFi settings
-#define WIFI_SSID "Greater"
-#define WIFI_PASSWORD "greater23"
+// #define WIFI_SSID "Greater"
+// #define WIFI_PASSWORD "greater24"
+
+// AP Mode Credentials
+#define AP_SSID "ESP32_modbus_scanner"
+#define AP_PSW "A1234567"
+#define HOSTNAME "esp32"
+
+// Homepgae placeholders
+#define plh_current_time "{{plh_current_time}}"
+#define plh_last_address "{{plh_last_address}}"
+#define plh_wifi_status "{{plh_wifi_status}}"
 
 //TIMER Settings
 #define PUBLISH_PERIOD 2000
 
 // MQTT configurations
-// #define MQTT_AUTH
+#define MQTT_AUTH
 #ifdef MQTT_AUTH
 	#define MQTT_HOST "350fd0725fa14a069e04d387121e69f7.s2.eu.hivemq.cloud"
 	#define MQTT_PORT 8883
@@ -31,7 +41,7 @@
 // MAX 485 pin DE, not(RE) connected togheter
 #define PIN_RE_DE 27
 #define PIN_RO 16 // RX
-#define PIN_DI 17 //TX
+#define PIN_DI 17 // TX
 
 // Number of tentatives for each readings
 #define nIter 2
