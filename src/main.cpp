@@ -287,34 +287,42 @@ void loop()
     {
         uint16_t content = 0x0000;
         uint8_t result = TRACER.readCoils(addr, &content);
-        if (result == 0)
+		Serial.println("Addr: " + addr_hex + " - Read_Coil - " + TRACER.exceptionDescription(result));
+		lastAddress += "<br><br>Read_Coil - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Coil,fn_1," + String(content) + "\n";
         }
         delay(10);
 
         result = TRACER.readDiscreteInputs(addr, &content);
-        if (result == 0)
+		Serial.println("Addr: " + addr_hex + " - Read_Discrete_Input - " + TRACER.exceptionDescription(result));
+		lastAddress += "Read_Discrete_Input - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Discrete_Input,fn_2," + String(content) + "\n";
         }
         delay(10);
 
         result = TRACER.readHoldingRegisters(addr, &content, 1);
-        if (result == 0)
+		Serial.println("Addr: " + addr_hex + " - Read_Holding_Registers - " + TRACER.exceptionDescription(result));
+		lastAddress += "Read_Holding_Registers - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Holding_Registers,fn_3," + String(content) + "\n";
         }
         delay(10);
 
         result = TRACER.readInputRegisters(addr, &content, 1, false);
-        if (result == 0)
+		Serial.println("Addr: " + addr_hex + " - Read_Input_Registers - " + TRACER.exceptionDescription(result));
+		lastAddress += "Read_Input_Registers - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Input_Registers,fn_4," + String(content) + "\n";
         }
         delay(10);
 
-        Serial.println("Addr: " + addr_hex);
+        // Serial.println("Addr: " + addr_hex);
         addr++;
     }
 

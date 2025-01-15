@@ -53,9 +53,9 @@ const char html_home[] PROGMEM = R"rawliteral(
 </head>
 <body>
 	<h2>System info</h2>
+    <h4>Wi-Fi status: {{plh_wifi_status}}</h4>
 	<h4>Current time: {{plh_current_time}}</h4>
 	<h4>Last address read: {{plh_last_address}}</h4>
-	<h4>Wi-Fi status: {{plh_wifi_status}}</h4>
 	<a href="/" class="button">Refresh</a>
 	
 	<hr>
