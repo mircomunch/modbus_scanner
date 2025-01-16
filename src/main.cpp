@@ -102,7 +102,6 @@ void handle_homepage()
         String(hour(currT)) + ":" + String(minute(currT)) + ":" + String(second(currT))
         + " " +
         String(day(currT)) + "/" + String(month(currT)) + "/" + String(year(currT));
-    // currentTime = String((int)now());
     homepage.replace(plh_current_time, currentTime);
     homepage.replace(plh_last_address, lastAddress);
     homepage.replace(plh_wifi_status, wifiStatus);
@@ -274,7 +273,8 @@ void loop()
             }
         }
     }
-    
+
+    mqtt.client.loop();
     server.handleClient();
 
     // Data reading logic
@@ -282,13 +282,16 @@ void loop()
     sprintf(_addr_hex, "%04X", addr);
     String addr_hex = "0x" + String(_addr_hex);
     lastAddress = addr_hex;
+	String resultsMsg = "";
 
-    if (addr <= 0xFFFF & !stopReading & message.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
+	if (addr <= 0xFFFF & !stopReading & message.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
     {
         uint16_t content = 0x0000;
         uint8_t result = TRACER.readCoils(addr, &content);
-		Serial.println("Addr: " + addr_hex + " - Read_Coil - " + TRACER.exceptionDescription(result));
-		lastAddress += "<br><br>Read_Coil - " + TRACER.exceptionDescription(result) + "<br>";
+		resultsMsg = "";
+		resultsMsg += "Addr:" + addr_hex + "-Read_Coil-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Coil\t\t- " + TRACER.exceptionDescription(result)) + "\n";
+        lastAddress += "<br><br>Read_Coil - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Coil,fn_1," + String(content) + "\n";
@@ -296,8 +299,9 @@ void loop()
         delay(10);
 
         result = TRACER.readDiscreteInputs(addr, &content);
-		Serial.println("Addr: " + addr_hex + " - Read_Discrete_Input - " + TRACER.exceptionDescription(result));
-		lastAddress += "Read_Discrete_Input - " + TRACER.exceptionDescription(result) + "<br>";
+		resultsMsg += "Addr:" + addr_hex + "-Read_Discrete_Input-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Discrete_Input\t- " + TRACER.exceptionDescription(result));
+        lastAddress += "Read_Discrete_Input - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Discrete_Input,fn_2," + String(content) + "\n";
@@ -305,8 +309,9 @@ void loop()
         delay(10);
 
         result = TRACER.readHoldingRegisters(addr, &content, 1);
-		Serial.println("Addr: " + addr_hex + " - Read_Holding_Registers - " + TRACER.exceptionDescription(result));
-		lastAddress += "Read_Holding_Registers - " + TRACER.exceptionDescription(result) + "<br>";
+		resultsMsg += "Addr:" + addr_hex + "-Read_Holding_Registers-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Holding_Registers\t- " + TRACER.exceptionDescription(result));
+        lastAddress += "Read_Holding_Registers - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Holding_Registers,fn_3," + String(content) + "\n";
@@ -314,8 +319,9 @@ void loop()
         delay(10);
 
         result = TRACER.readInputRegisters(addr, &content, 1, false);
-		Serial.println("Addr: " + addr_hex + " - Read_Input_Registers - " + TRACER.exceptionDescription(result));
-		lastAddress += "Read_Input_Registers - " + TRACER.exceptionDescription(result) + "<br>";
+		resultsMsg += "Addr:" + addr_hex + "-Read_Input_Registers-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Input_Registers\t- " + TRACER.exceptionDescription(result));
+        lastAddress += "Read_Input_Registers - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
             message += String((int)now()) + "," + String(addr_hex) + ",Read_Input_Registers,fn_4," + String(content) + "\n";
@@ -333,7 +339,7 @@ void loop()
 
         if (message.isEmpty())
         {
-            message = String((int)now()) + "," + String(addr_hex) + ",NO_NEW_DATA";
+            message = String((int)now()) + "," + String(addr_hex) + ",NO_NEW_DATA," + resultsMsg;
         }
         else
         {
@@ -354,6 +360,4 @@ void loop()
         }
         xTimerStart(publishTimer, 0);
     }
-
-    mqtt.client.loop();
 }
