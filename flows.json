@@ -289,7 +289,7 @@
             },
             {
                 "name": "MQTT_TOPIC_DATETIME",
-                "value": "modbus_scanner/data",
+                "value": "modbus_scanner/datetime",
                 "type": "str"
             }
         ]
@@ -1225,7 +1225,7 @@
             "bd1cf3cddf5c0c08"
         ],
         "x": 145,
-        "y": 420,
+        "y": 400,
         "wires": [
             [
                 "eaa85f78473dc59c"

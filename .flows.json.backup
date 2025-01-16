@@ -1,32 +1,8 @@
 [
     {
-        "id": "6c3e8355e6babcc3",
-        "type": "tab",
-        "label": "Receive from device",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "50b29753e919b97e",
-        "type": "tab",
-        "label": "Read from file",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "c4d0bcacbbd07b78",
-        "type": "tab",
-        "label": "Datetime",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "f222cff05c62ff60",
         "type": "tab",
-        "label": "TEST Dummy Scanner",
+        "label": "Dummy Scanner",
         "disabled": false,
         "info": "",
         "env": []
@@ -34,7 +10,7 @@
     {
         "id": "f9fc74821ea183a4",
         "type": "tab",
-        "label": "TEST Receive from device",
+        "label": "Receive from device",
         "disabled": false,
         "info": "",
         "env": []
@@ -42,7 +18,7 @@
     {
         "id": "ecbd6b1f6281af5a",
         "type": "tab",
-        "label": "TEST Datetime",
+        "label": "Datetime",
         "disabled": false,
         "info": "",
         "env": []
@@ -50,7 +26,7 @@
     {
         "id": "ae59162780495ec0",
         "type": "tab",
-        "label": "TEST Startup",
+        "label": "Startup",
         "disabled": false,
         "info": "",
         "env": []
@@ -58,7 +34,7 @@
     {
         "id": "457756dc470fc3f0",
         "type": "tab",
-        "label": "TEST List Addr",
+        "label": "List Addr",
         "disabled": false,
         "info": "",
         "env": []
@@ -66,7 +42,7 @@
     {
         "id": "578cd3ed36ceeb60",
         "type": "tab",
-        "label": "TEST Records",
+        "label": "Records",
         "disabled": false,
         "info": "",
         "env": []
@@ -305,6 +281,16 @@
                 "name": "ERROR_LOG_PATH",
                 "value": "C:\\Users\\mirco\\Desktop\\TESTmodbus_scanner_error_log.txt",
                 "type": "str"
+            },
+            {
+                "name": "MQTT_TOPIC_DATA",
+                "value": "modbus_scanner/data",
+                "type": "str"
+            },
+            {
+                "name": "MQTT_TOPIC_DATETIME",
+                "value": "modbus_scanner/data",
+                "type": "str"
             }
         ]
     },
@@ -347,870 +333,6 @@
         "order": 2,
         "width": 2,
         "height": 1
-    },
-    {
-        "id": "722ed76cb2538e3c",
-        "type": "mqtt in",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "topic": "modbus_scanner/data",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "eb6b0f352e15e08d",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 220,
-        "y": 100,
-        "wires": [
-            [
-                "d7879af4505b84b7",
-                "822bbb866f1d94c6",
-                "ca37a941403a3e42",
-                "f8a145859f46f2d8"
-            ]
-        ]
-    },
-    {
-        "id": "d7879af4505b84b7",
-        "type": "debug",
-        "z": "6c3e8355e6babcc3",
-        "name": "debug 1",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 440,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "822bbb866f1d94c6",
-        "type": "switch",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "property": "payload",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "cont",
-                "v": "NO_NEW_DATA",
-                "vt": "str"
-            },
-            {
-                "t": "else"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 430,
-        "y": 240,
-        "wires": [
-            [
-                "57641d2215fa2fb9"
-            ],
-            [
-                "9596de1c97172996",
-                "b0221d9ce10f02e0",
-                "5600e8b1cb6fc767",
-                "8ff4d018e28daf74"
-            ]
-        ]
-    },
-    {
-        "id": "57641d2215fa2fb9",
-        "type": "debug",
-        "z": "6c3e8355e6babcc3",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 620,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "9596de1c97172996",
-        "type": "debug",
-        "z": "6c3e8355e6babcc3",
-        "name": "debug 3",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 620,
-        "y": 260,
-        "wires": []
-    },
-    {
-        "id": "b0221d9ce10f02e0",
-        "type": "file",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "filename": "C:\\Users\\mirco\\Desktop\\modbus_scanner_log.txt",
-        "filenameType": "str",
-        "appendNewline": true,
-        "createDir": false,
-        "overwriteFile": "false",
-        "encoding": "none",
-        "x": 750,
-        "y": 300,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "faa339c9ab75e9c6",
-        "type": "ui_text",
-        "z": "6c3e8355e6babcc3",
-        "group": "2eb12e30c6f6d247",
-        "order": 2,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Current address",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 800,
-        "y": 180,
-        "wires": []
-    },
-    {
-        "id": "3b7a2f10777fe4cd",
-        "type": "ui_text",
-        "z": "6c3e8355e6babcc3",
-        "group": "2eb12e30c6f6d247",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Last seen",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 780,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "5600e8b1cb6fc767",
-        "type": "link out",
-        "z": "6c3e8355e6babcc3",
-        "name": "received new address",
-        "mode": "link",
-        "links": [
-            "b21cc1db0fed6403",
-            "06b3cbee88649a11"
-        ],
-        "x": 575,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "7324c9bb74f0be5d",
-        "type": "inject",
-        "z": "6c3e8355e6babcc3",
-        "name": "Startup",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "timestamp,address,fn_name,fn_code,content",
-        "payloadType": "str",
-        "x": 430,
-        "y": 300,
-        "wires": [
-            [
-                "b0221d9ce10f02e0"
-            ]
-        ]
-    },
-    {
-        "id": "f8a145859f46f2d8",
-        "type": "function",
-        "z": "6c3e8355e6babcc3",
-        "name": "function 1",
-        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[1]){\n    msg.payload = current_addr[1];\n} else{\n    msg.payload = \"-\";\n}\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 620,
-        "y": 180,
-        "wires": [
-            [
-                "faa339c9ab75e9c6"
-            ]
-        ]
-    },
-    {
-        "id": "8ff4d018e28daf74",
-        "type": "csv",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "sep": ",",
-        "hdrin": false,
-        "hdrout": "none",
-        "multi": "mult",
-        "ret": "\\n",
-        "temp": "timestamp,address,function_name,function_code,content",
-        "skip": "0",
-        "strings": false,
-        "include_empty_strings": false,
-        "include_null_values": "",
-        "x": 610,
-        "y": 400,
-        "wires": [
-            [
-                "807ff4ae20232984"
-            ]
-        ]
-    },
-    {
-        "id": "d55276cde44d38f3",
-        "type": "sqlite",
-        "z": "6c3e8355e6babcc3",
-        "mydb": "7e1671a5d7023afa",
-        "sqlquery": "msg.topic",
-        "sql": "",
-        "name": "",
-        "x": 630,
-        "y": 480,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "c58d79f7bd1a905c",
-        "type": "template",
-        "z": "6c3e8355e6babcc3",
-        "name": "INSERT INTO board_id",
-        "field": "topic",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "INSERT INTO esp32_mirco VALUES\n({{payload.timestamp}},\"{{payload.address}}\",\"{{payload.function_name}}\",\"{{payload.function_code}}\",{{payload.content}});",
-        "output": "str",
-        "x": 910,
-        "y": 400,
-        "wires": [
-            [
-                "d55276cde44d38f3"
-            ]
-        ]
-    },
-    {
-        "id": "807ff4ae20232984",
-        "type": "split",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 730,
-        "y": 400,
-        "wires": [
-            [
-                "c58d79f7bd1a905c"
-            ]
-        ]
-    },
-    {
-        "id": "3d0d09fbcf544a02",
-        "type": "inject",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 480,
-        "wires": [
-            [
-                "55988a87e4af90ae",
-                "fd04ec96c409a96b"
-            ]
-        ]
-    },
-    {
-        "id": "55988a87e4af90ae",
-        "type": "template",
-        "z": "6c3e8355e6babcc3",
-        "name": "CREATE TABLE board_id",
-        "field": "topic",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "CREATE TABLE IF NOT EXISTS esp32_mirco (timestamp INTEGER, address TEXT, fn_name TEXT, fn_code TEXT, content INTEGER);",
-        "output": "str",
-        "x": 370,
-        "y": 480,
-        "wires": [
-            [
-                "d55276cde44d38f3"
-            ]
-        ]
-    },
-    {
-        "id": "ca0b9de6ff67c5f6",
-        "type": "template",
-        "z": "6c3e8355e6babcc3",
-        "name": "DROP TABLE board_id",
-        "field": "topic",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "DROP TABLE esp32_mirco;",
-        "output": "str",
-        "x": 370,
-        "y": 520,
-        "wires": [
-            [
-                "d55276cde44d38f3"
-            ]
-        ]
-    },
-    {
-        "id": "6dca357c60d552e3",
-        "type": "inject",
-        "z": "6c3e8355e6babcc3",
-        "name": "Drop",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 520,
-        "wires": [
-            [
-                "ca0b9de6ff67c5f6"
-            ]
-        ]
-    },
-    {
-        "id": "48a3281a57c9ef48",
-        "type": "link in",
-        "z": "6c3e8355e6babcc3",
-        "name": "write to db",
-        "links": [
-            "307b8d53d6ead723",
-            "cb921c71a4458521"
-        ],
-        "x": 635,
-        "y": 360,
-        "wires": [
-            [
-                "807ff4ae20232984"
-            ]
-        ]
-    },
-    {
-        "id": "fd04ec96c409a96b",
-        "type": "link out",
-        "z": "6c3e8355e6babcc3",
-        "name": "startup settings",
-        "mode": "link",
-        "links": [
-            "9505e5e928e14854",
-            "0eece3b4025970c9"
-        ],
-        "x": 275,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "ca37a941403a3e42",
-        "type": "function",
-        "z": "6c3e8355e6babcc3",
-        "name": "function 2",
-        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[0]){\n    var date = new Date(current_addr[0] * 1000);\n    var lastseen = \"\" + ((date.getHours() < 10 ? '0' : '') + date.getHours()) + \":\" +\n        ((date.getMinutes() < 10 ? '0' : '') + date.getMinutes()) + \":\" +\n        ((date.getSeconds() < 10 ? '0' : '') + date.getSeconds()) + \" \" +\n        ((date.getDate() < 10 ? '0' : '') + date.getDate()) + \"/\" +\n        (((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1)) + \"/\" +\n        date.getFullYear();\n    msg.payload = lastseen;\n} else{\n    msg.payload = \"-\";\n}\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 620,
-        "y": 140,
-        "wires": [
-            [
-                "3b7a2f10777fe4cd"
-            ]
-        ]
-    },
-    {
-        "id": "acd3a24a29f31ca9",
-        "type": "file in",
-        "z": "50b29753e919b97e",
-        "name": "",
-        "filename": "C:\\Users\\mirco\\Desktop\\modbus_scanner_log.txt",
-        "filenameType": "str",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 410,
-        "y": 80,
-        "wires": [
-            [
-                "80634cdde06d87d5"
-            ]
-        ]
-    },
-    {
-        "id": "b21cc1db0fed6403",
-        "type": "link in",
-        "z": "50b29753e919b97e",
-        "name": "update reading",
-        "links": [
-            "5600e8b1cb6fc767",
-            "23478c600cb5f289"
-        ],
-        "x": 165,
-        "y": 40,
-        "wires": [
-            [
-                "acd3a24a29f31ca9"
-            ]
-        ]
-    },
-    {
-        "id": "80634cdde06d87d5",
-        "type": "csv",
-        "z": "50b29753e919b97e",
-        "name": "",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "none",
-        "multi": "mult",
-        "ret": "\\n",
-        "temp": "timestamp,address,function_name,function_code,content",
-        "skip": "0",
-        "strings": false,
-        "include_empty_strings": false,
-        "include_null_values": "",
-        "x": 690,
-        "y": 80,
-        "wires": [
-            [
-                "06ab7d59df7eb2be",
-                "87b20b7fed27c053",
-                "307b8d53d6ead723"
-            ]
-        ]
-    },
-    {
-        "id": "06ab7d59df7eb2be",
-        "type": "debug",
-        "z": "50b29753e919b97e",
-        "name": "debug 5",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 840,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "2671f546ed483501",
-        "type": "inject",
-        "z": "50b29753e919b97e",
-        "name": "Refresh",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 130,
-        "y": 80,
-        "wires": [
-            [
-                "acd3a24a29f31ca9"
-            ]
-        ]
-    },
-    {
-        "id": "87b20b7fed27c053",
-        "type": "sqlite",
-        "z": "50b29753e919b97e",
-        "mydb": "7e1671a5d7023afa",
-        "sqlquery": "fixed",
-        "sql": "SELECT DISTINCT\n    address\nFROM\n    esp32_mirco\nORDER BY\n    address ASC;",
-        "name": "select all available address",
-        "x": 320,
-        "y": 260,
-        "wires": [
-            [
-                "3cde4a6fbcbf40fa"
-            ]
-        ]
-    },
-    {
-        "id": "3cde4a6fbcbf40fa",
-        "type": "function",
-        "z": "50b29753e919b97e",
-        "name": "set ids",
-        "func": "msg.options = [];\nfor (let index = 0; index < msg.payload.length; index++) {\n    const addr = msg.payload[index].address;\n    msg.options.push(addr);\n}\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 510,
-        "y": 260,
-        "wires": [
-            [
-                "809e1b370265e5b2"
-            ]
-        ]
-    },
-    {
-        "id": "809e1b370265e5b2",
-        "type": "ui_dropdown",
-        "z": "50b29753e919b97e",
-        "name": "",
-        "label": "Address:",
-        "tooltip": "",
-        "place": "Select option",
-        "group": "cdcd3343ef7525a1",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "multiple": false,
-        "options": [],
-        "payload": "",
-        "topic": "topic",
-        "topicType": "msg",
-        "className": "",
-        "x": 640,
-        "y": 260,
-        "wires": [
-            [
-                "9a1c90b91b4ce4ab"
-            ]
-        ]
-    },
-    {
-        "id": "9a1c90b91b4ce4ab",
-        "type": "change",
-        "z": "50b29753e919b97e",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "selectedAddress",
-                "pt": "global",
-                "to": "payload",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 840,
-        "y": 260,
-        "wires": [
-            [
-                "c46f06b431ecc9c6"
-            ]
-        ]
-    },
-    {
-        "id": "efac2f67b2410f34",
-        "type": "sqlite",
-        "z": "50b29753e919b97e",
-        "mydb": "7e1671a5d7023afa",
-        "sqlquery": "msg.topic",
-        "sql": "",
-        "name": "select single address contents",
-        "x": 470,
-        "y": 320,
-        "wires": [
-            [
-                "a86abeb2930a4acb",
-                "1157442f5c1f3135"
-            ]
-        ]
-    },
-    {
-        "id": "7dc2c9ae95b7b2c5",
-        "type": "debug",
-        "z": "50b29753e919b97e",
-        "name": "debug 6",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 980,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "307b8d53d6ead723",
-        "type": "link out",
-        "z": "50b29753e919b97e",
-        "d": true,
-        "name": "csv file output",
-        "mode": "link",
-        "links": [
-            "48a3281a57c9ef48",
-            "d53b63ec349266a0"
-        ],
-        "x": 795,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "c46f06b431ecc9c6",
-        "type": "template",
-        "z": "50b29753e919b97e",
-        "name": "",
-        "field": "topic",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "SELECT\n    fn_name,timestamp,content\nFROM\n    esp32_mirco\nWHERE\n    address=\"{{global.selectedAddress}}\"\nORDER BY\n    timestamp ASC;",
-        "output": "str",
-        "x": 260,
-        "y": 320,
-        "wires": [
-            [
-                "efac2f67b2410f34"
-            ]
-        ]
-    },
-    {
-        "id": "1157442f5c1f3135",
-        "type": "ui_table",
-        "z": "50b29753e919b97e",
-        "group": "cdcd3343ef7525a1",
-        "name": "",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "columns": [
-            {
-                "field": "fn_name",
-                "title": "fn_name",
-                "width": "",
-                "align": "left",
-                "formatter": "plaintext",
-                "formatterParams": {
-                    "target": "_blank"
-                }
-            },
-            {
-                "field": "timestamp",
-                "title": "timestamp",
-                "width": "",
-                "align": "left",
-                "formatter": "plaintext",
-                "formatterParams": {
-                    "target": "_blank"
-                }
-            },
-            {
-                "field": "content",
-                "title": "content",
-                "width": "",
-                "align": "left",
-                "formatter": "plaintext",
-                "formatterParams": {
-                    "target": "_blank"
-                }
-            }
-        ],
-        "outputs": 0,
-        "cts": false,
-        "x": 690,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "047cda4da97ffebe",
-        "type": "inject",
-        "z": "50b29753e919b97e",
-        "name": "Refresh",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 400,
-        "wires": [
-            [
-                "c46f06b431ecc9c6"
-            ]
-        ]
-    },
-    {
-        "id": "a86abeb2930a4acb",
-        "type": "debug",
-        "z": "50b29753e919b97e",
-        "name": "debug 7",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 680,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "9505e5e928e14854",
-        "type": "link in",
-        "z": "50b29753e919b97e",
-        "name": "update address dropdown list",
-        "links": [
-            "fd04ec96c409a96b",
-            "d13c8cd7e00be100"
-        ],
-        "x": 145,
-        "y": 280,
-        "wires": [
-            [
-                "87b20b7fed27c053"
-            ]
-        ]
-    },
-    {
-        "id": "7e297add05b79683",
-        "type": "inject",
-        "z": "c4d0bcacbbd07b78",
-        "d": true,
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "300",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 210,
-        "y": 100,
-        "wires": [
-            [
-                "51c79a07dcb571ed",
-                "2210235531134de5"
-            ]
-        ]
-    },
-    {
-        "id": "51c79a07dcb571ed",
-        "type": "debug",
-        "z": "c4d0bcacbbd07b78",
-        "name": "debug 4",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 400,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "1d87e6822a86aa6b",
-        "type": "mqtt out",
-        "z": "c4d0bcacbbd07b78",
-        "name": "",
-        "topic": "modbus_scanner/datetime",
-        "qos": "2",
-        "retain": "false",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb6b0f352e15e08d",
-        "x": 720,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "2210235531134de5",
-        "type": "function",
-        "z": "c4d0bcacbbd07b78",
-        "name": "timestamp from ms to s",
-        "func": "msg.payload = Math.round(msg.payload / 1000);\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 450,
-        "y": 120,
-        "wires": [
-            [
-                "1d87e6822a86aa6b"
-            ]
-        ]
     },
     {
         "id": "8b3bcffbde16341d",
@@ -1280,7 +402,7 @@
         "type": "mqtt out",
         "z": "f222cff05c62ff60",
         "name": "",
-        "topic": "modbus_scanner/test/data",
+        "topic": "${MQTT_TOPIC_DATA}",
         "qos": "",
         "retain": "",
         "respTopic": "",
@@ -1289,7 +411,7 @@
         "correl": "",
         "expiry": "",
         "broker": "300efc65cc866143",
-        "x": 560,
+        "x": 550,
         "y": 180,
         "wires": []
     },
@@ -1298,7 +420,7 @@
         "type": "mqtt in",
         "z": "f9fc74821ea183a4",
         "name": "",
-        "topic": "modbus_scanner/test/data",
+        "topic": "${MQTT_TOPIC_DATA}",
         "qos": "2",
         "datatype": "auto-detect",
         "broker": "300efc65cc866143",
@@ -1306,7 +428,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 170,
+        "x": 160,
         "y": 140,
         "wires": [
             [
@@ -1636,7 +758,7 @@
         "type": "mqtt out",
         "z": "ecbd6b1f6281af5a",
         "name": "",
-        "topic": "modbus_scanner/test/datetime",
+        "topic": "${MQTT_TOPIC_DATETIME}",
         "qos": "2",
         "retain": "false",
         "respTopic": "",
@@ -2103,7 +1225,7 @@
             "bd1cf3cddf5c0c08"
         ],
         "x": 145,
-        "y": 420,
+        "y": 400,
         "wires": [
             [
                 "eaa85f78473dc59c"
