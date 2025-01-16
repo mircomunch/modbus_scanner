@@ -3,15 +3,23 @@
 #include <solarModbus.hpp>
 #include <MQTT.hpp>
 #include <setup.hpp>
+#include <Preferences.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+#include <Update.h>
+#include <TimeLib.h>
+
+#include <html/home.hpp>
+#include <html/change.hpp>
 
 char _host_char[sizeof(MQTT_HOST)] = MQTT_HOST;
 
 #ifdef MQTT_AUTH
-char _host_user[sizeof(MQTT_USER)] = MQTT_USER;
-char _host_psw[sizeof(MQTT_PASSWORD)] = MQTT_PASSWORD;
-MQTT mqtt(BOARD_ID, _host_char, MQTT_PORT, MQTT_PUBLISH_MESSAGE_MAX_SIZE, MQTT_CERT_EN, _host_user, _host_psw);
+    char _host_user[sizeof(MQTT_USER)] = MQTT_USER;
+    char _host_psw[sizeof(MQTT_PASSWORD)] = MQTT_PASSWORD;
+    MQTT mqtt(BOARD_ID, _host_char, MQTT_PORT, MQTT_PUBLISH_MESSAGE_MAX_SIZE, MQTT_CERT_EN, _host_user, _host_psw);
 #else
-MQTT mqtt(BOARD_ID, _host_char, MQTT_PORT);
+    MQTT mqtt(BOARD_ID, _host_char, MQTT_PORT);
 #endif
 
 TimerHandle_t publishTimer;
@@ -23,6 +31,19 @@ uint16_t addr = 0x0000;
 bool stopReading = true;
 long mqttReconnectAttempt = 0;
 long wifiReconnectAttempt = 0;
+
+WebServer server(80);
+
+Preferences preferences;
+String ssid;
+String psw;
+const char *ap_ssid = AP_SSID;
+const char *ap_psw = AP_PSW;
+const char *hostname = HOSTNAME;
+
+String wifiStatus = "-";
+String currentTime = "-";
+String lastAddress = "-";
 
 void publishNowCallback()
 {
@@ -41,17 +62,11 @@ void datetimeCallback(const char *topic, byte *payload, unsigned int length)
     Serial.print("Received datetime: ");
     Serial.println(datetimePayload);
 
-    unsigned long long milliseconds = datetimePayload.toInt();
+    uint64_t seconds = datetimePayload.toDouble();
 
-    if (milliseconds > 0)
+    if (seconds > 0)
     {
-        // Convert milliseconds to seconds and remaining microseconds
-        time_t seconds = milliseconds / 1000;              // Extract seconds
-        suseconds_t micros = (milliseconds % 1000) * 1000; // Remaining microseconds
-
-        // Set the system time
-        struct timeval now = {.tv_sec = seconds, .tv_usec = micros};
-        settimeofday(&now, NULL);
+        setTime(seconds);
         stopReading = false;
         xTimerStart(publishTimer, 0);
     }
@@ -61,7 +76,6 @@ void datetimeCallback(const char *topic, byte *payload, unsigned int length)
     }
 }
 
-// Generic message handler
 void messageHandler(const char *topic, byte *payload, unsigned int length)
 {
     Serial.print("Message arrived on topic: ");
@@ -78,21 +92,142 @@ void messageHandler(const char *topic, byte *payload, unsigned int length)
     }
 }
 
+void handle_homepage()
+{
+    String homepage = String(html_home);
+    wifiStatus = WiFi.status() == WL_CONNECTED ? "Connected" : "Not connected";
+
+    time_t currT = now();
+    currentTime = 
+        String(hour(currT)) + ":" + String(minute(currT)) + ":" + String(second(currT))
+        + " " +
+        String(day(currT)) + "/" + String(month(currT)) + "/" + String(year(currT));
+    homepage.replace(plh_current_time, currentTime);
+    homepage.replace(plh_last_address, lastAddress);
+    homepage.replace(plh_wifi_status, wifiStatus);
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", homepage.c_str());
+}
+
+void handle_change_wifi()
+{
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", html_change);
+    String new_ssid = server.arg("ssid");
+    String new_psw = server.arg("psw");
+    Serial.println("New Wi-Fi credentials: " + new_ssid + " - " + new_psw);
+    preferences.begin("credentials", false);
+    preferences.putString("ssid", new_ssid);
+    preferences.putString("psw", new_psw);
+    preferences.end();
+    delay(3000);
+    ESP.restart();
+}
+
+void handle_NotFound()
+{
+    server.sendHeader("Connection", "close");
+    server.send(404, "text/plain", "Not found");
+}
+
+void handleUpdate()
+{
+    size_t fsize = UPDATE_SIZE_UNKNOWN;
+    if (server.hasArg("size"))
+    {
+        fsize = server.arg("size").toInt();
+    }
+    HTTPUpload &upload = server.upload();
+    if (upload.status == UPLOAD_FILE_START)
+    {
+        Serial.printf("Receiving Update: %s, Size: %d\n", upload.filename.c_str(), fsize);
+        if (!Update.begin(fsize))
+        {
+            Update.printError(Serial);
+        }
+    }
+    else if (upload.status == UPLOAD_FILE_WRITE)
+    {
+        if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
+        {
+            Update.printError(Serial);
+        }
+    }
+    else if (upload.status == UPLOAD_FILE_END)
+    {
+        if (Update.end(true))
+        {
+            Serial.printf("Update Success: %u bytes\nRebooting...\n", upload.totalSize);
+        }
+        else
+        {
+            Serial.printf("%s\n", Update.errorString());
+        }
+    }
+}
+
+void handleUpdateEnd()
+{
+    server.sendHeader("Connection", "close");
+    if (Update.hasError())
+    {
+        server.send(502, "text/plain", Update.errorString());
+    }
+    else
+    {
+        server.sendHeader("Refresh", "10");
+        server.sendHeader("Location", "/");
+        server.send(307);
+        ESP.restart();
+    }
+}
+
 void setup()
 {
     Serial.begin(115200);
+    preferences.begin("credentials", false);
+    ssid = preferences.getString("ssid", "");
+    psw = preferences.getString("psw", "");
+    preferences.end();
 
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-    while (WiFi.status() != WL_CONNECTED)
+    if (ssid == "" || psw == "")
     {
-        delay(500);
-        Serial.print(".");
+        Serial.println("No values saved for ssid or password");
     }
-    Serial.println("\nWiFi connected\nIP address: ");
-    Serial.println(WiFi.localIP());
-    Serial.println("Init...");
+    else
+    {
+        Serial.println("Searching for Wi-Fi: " + ssid);
+    }
+    WiFi.mode(WIFI_AP_STA);
+    WiFi.softAP(ap_ssid, ap_psw);
+    WiFi.softAPsetHostname(hostname);
+    WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, INADDR_NONE);
+    WiFi.setHostname(hostname);
+    /*use mdns for host name resolution*/
+    if (!MDNS.begin(hostname))
+    {
+        Serial.println("Error setting up MDNS responder!");
+        while (1)
+        {
+            delay(10000);
+            ESP.restart();
+        }
+    }
+    Serial.println("mDNS responder started");
+    /*return index page which is stored in serverIndex */
+    server.on("/", HTTP_GET, handle_homepage);
+    server.on("/change-wifi", HTTP_GET, handle_change_wifi);
+    server.onNotFound(handle_NotFound);
+    /*handling uploading firmware file */
+    server.on("/update-firmware", HTTP_POST, []()
+              { handleUpdateEnd(); }, []()
+              { handleUpdate(); });
+    server.on("/favicon.ico", HTTP_GET, []()
+              {
+        server.sendHeader("Content-Encoding", "gzip");
+        server.send_P(200, "image/x-icon", favicon_ico_gz, favicon_ico_gz_len); });
+
+    server.begin();
 
     // Start timer
     publishTimer = xTimerCreate("publishTimer", pdMS_TO_TICKS(PUBLISH_PERIOD), pdFALSE, (void *)0,
@@ -109,8 +244,9 @@ void loop()
         {
             wifiReconnectAttempt = now;
             Serial.println("Reconnecting to WiFi...");
-            if (WiFi.begin(WIFI_SSID, WIFI_PASSWORD) == WL_CONNECTED)
+            if (WiFi.begin(ssid, psw) == WL_CONNECTED)
             {
+                Serial.println("Connected to: " + ssid);
                 wifiReconnectAttempt = 0;
                 return;
             }
@@ -138,43 +274,61 @@ void loop()
         }
     }
 
+    mqtt.client.loop();
+    server.handleClient();
+
     // Data reading logic
     char _addr_hex[10];
     sprintf(_addr_hex, "%04X", addr);
     String addr_hex = "0x" + String(_addr_hex);
+    lastAddress = addr_hex;
+	String resultsMsg = "";
 
-    if (addr <= 0xFFFF & !stopReading & message.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
+	if (addr <= 0xFFFF & !stopReading & message.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
     {
         uint16_t content = 0x0000;
         uint8_t result = TRACER.readCoils(addr, &content);
-        if (result == 0)
+		resultsMsg = "";
+		resultsMsg += "Addr:" + addr_hex + "-Read_Coil-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Coil\t\t- " + TRACER.exceptionDescription(result)) + "\n";
+        lastAddress += "<br><br>Read_Coil - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
-            message += String(time(NULL) * 1000) + "," + String(addr_hex) + ",Read_Coil,fn_1," + String(content) + "\n";
+            message += String((int)now()) + "," + String(addr_hex) + ",Read_Coil,fn_1," + String(content) + "\n";
         }
         delay(10);
 
         result = TRACER.readDiscreteInputs(addr, &content);
-        if (result == 0)
+		resultsMsg += "Addr:" + addr_hex + "-Read_Discrete_Input-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Discrete_Input\t- " + TRACER.exceptionDescription(result));
+        lastAddress += "Read_Discrete_Input - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
-            message += String(time(NULL) * 1000) + "," + String(addr_hex) + ",Read_Discrete_Input,fn_2," + String(content) + "\n";
+            message += String((int)now()) + "," + String(addr_hex) + ",Read_Discrete_Input,fn_2," + String(content) + "\n";
         }
         delay(10);
 
         result = TRACER.readHoldingRegisters(addr, &content, 1);
-        if (result == 0)
+		resultsMsg += "Addr:" + addr_hex + "-Read_Holding_Registers-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Holding_Registers\t- " + TRACER.exceptionDescription(result));
+        lastAddress += "Read_Holding_Registers - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
-            message += String(time(NULL) * 1000) + "," + String(addr_hex) + ",Read_Holding_Registers,fn_3," + String(content) + "\n";
+            message += String((int)now()) + "," + String(addr_hex) + ",Read_Holding_Registers,fn_3," + String(content) + "\n";
         }
         delay(10);
 
         result = TRACER.readInputRegisters(addr, &content, 1, false);
-        if (result == 0)
+		resultsMsg += "Addr:" + addr_hex + "-Read_Input_Registers-" + TRACER.exceptionDescription(result) + "\n";
+        Serial.println("Addr: " + addr_hex + " - Read_Input_Registers\t- " + TRACER.exceptionDescription(result));
+        lastAddress += "Read_Input_Registers - " + TRACER.exceptionDescription(result) + "<br>";
+		if (result == 0)
         {
-            message += String(time(NULL) * 1000) + "," + String(addr_hex) + ",Read_Input_Registers,fn_4," + String(content) + "\n";
+            message += String((int)now()) + "," + String(addr_hex) + ",Read_Input_Registers,fn_4," + String(content) + "\n";
         }
         delay(10);
 
-        Serial.println("Addr: " + addr_hex);
+        // Serial.println("Addr: " + addr_hex);
         addr++;
     }
 
@@ -185,7 +339,7 @@ void loop()
 
         if (message.isEmpty())
         {
-            message = String(time(NULL) * 1000) + "," + "NO_NEW_DATA," + String(addr_hex);
+            message = String((int)now()) + "," + String(addr_hex) + ",NO_NEW_DATA," + resultsMsg;
         }
         else
         {
@@ -206,6 +360,4 @@ void loop()
         }
         xTimerStart(publishTimer, 0);
     }
-
-    mqtt.client.loop();
 }
