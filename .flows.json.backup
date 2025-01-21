@@ -80,25 +80,6 @@
         "sessionExpiry": ""
     },
     {
-        "id": "d4687e765b4d58cd",
-        "type": "ui_tab",
-        "name": "Home",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
-    },
-    {
-        "id": "cdcd3343ef7525a1",
-        "type": "ui_group",
-        "name": "Select",
-        "tab": "d4687e765b4d58cd",
-        "order": 2,
-        "disp": false,
-        "width": "6",
-        "collapse": false,
-        "className": ""
-    },
-    {
         "id": "300efc65cc866143",
         "type": "mqtt-broker",
         "name": "hiveMQ free",
@@ -153,17 +134,6 @@
         "type": "sqlitedb",
         "db": "${DB_PATH}",
         "mode": "RWC"
-    },
-    {
-        "id": "b49b6639dd17147e",
-        "type": "ui_group",
-        "name": "Select",
-        "tab": "59c819e0c987577c",
-        "order": 2,
-        "disp": true,
-        "width": "12",
-        "collapse": false,
-        "className": ""
     },
     {
         "id": "7381dac1204ca225",
@@ -274,12 +244,12 @@
             },
             {
                 "name": "DB_PATH",
-                "value": "C:\\Users\\mirco\\Desktop\\TESTmodbus_scanner.db",
+                "value": "/data/scanner.db",
                 "type": "str"
             },
             {
                 "name": "ERROR_LOG_PATH",
-                "value": "C:\\Users\\mirco\\Desktop\\TESTmodbus_scanner_error_log.txt",
+                "value": "/data/scanner_error_log.txt",
                 "type": "str"
             },
             {
@@ -289,7 +259,7 @@
             },
             {
                 "name": "MQTT_TOPIC_DATETIME",
-                "value": "modbus_scanner/data",
+                "value": "modbus_scanner/datetime",
                 "type": "str"
             }
         ]
@@ -297,7 +267,7 @@
     {
         "id": "59c819e0c987577c",
         "type": "ui_tab",
-        "name": "TEST",
+        "name": "Home",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
@@ -314,13 +284,13 @@
         "className": ""
     },
     {
-        "id": "2eb12e30c6f6d247",
+        "id": "b49b6639dd17147e",
         "type": "ui_group",
-        "name": "Info",
-        "tab": "d4687e765b4d58cd",
+        "name": "Select",
+        "tab": "59c819e0c987577c",
         "order": 2,
         "disp": true,
-        "width": "6",
+        "width": "12",
         "collapse": false,
         "className": ""
     },
@@ -338,7 +308,6 @@
         "id": "8b3bcffbde16341d",
         "type": "inject",
         "z": "f222cff05c62ff60",
-        "d": true,
         "name": "",
         "props": [
             {
@@ -352,11 +321,11 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 170,
-        "y": 120,
+        "x": 210,
+        "y": 160,
         "wires": [
             [
-                "744a9af79fdb1269"
+                "7d76127d2725fd6c"
             ]
         ]
     },
@@ -364,6 +333,7 @@
         "id": "744a9af79fdb1269",
         "type": "function",
         "z": "f222cff05c62ff60",
+        "d": true,
         "name": "create data",
         "func": "let fn_names = [\"Read_Coil\", \"Read_Discrete_Input\", \"Read_Holding_Registers\", \"Read_Input_Registers\",];\nlet fn_codes = [\"fn_1\", \"fn_2\", \"fn_3\", \"fn_4\",];\nvar count = context.get('count') || 0;\ncount += 1;\ncontext.set('count', count);\nvar timestamp = String(Math.floor(msg.timestamp / 1000));\n\nvar isData = Math.floor(Math.random() * 2);\nif (isData) {\n    var fn_index = Math.floor(Math.random() * 4);\n    var content = Math.floor(Math.random() * 1000);\n\n    msg.payload =  timestamp + \",\";\n    msg.payload += \"0x\" + String(count).padStart(4, '0') + \",\";\n    msg.payload += String(fn_names[fn_index]) + \",\";\n    msg.payload += String(fn_codes[fn_index]) + \",\";\n    msg.payload += String(content);\n}\nelse {\n    msg.payload =  timestamp + \",\";\n    msg.payload += \"0x\" + String(count).padStart(4, '0') + \",\";\n    msg.payload += \"NO_NEW_DATA,\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload +=  \"-Read_Coil-Illegal address\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload += \"-Read_Discrete_Input-Illegal address\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload += \"-Read_Holding_Registers-Illegal address\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload += \"-Read_Input_Registers-Illegal address\\n\";\n}\n\nreturn msg;",
         "outputs": 1,
@@ -372,7 +342,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 330,
+        "x": 490,
         "y": 120,
         "wires": [
             [
@@ -393,8 +363,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 500,
-        "y": 120,
+        "x": 720,
+        "y": 140,
         "wires": []
     },
     {
@@ -410,10 +380,68 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "300efc65cc866143",
-        "x": 550,
-        "y": 180,
+        "broker": "eb6b0f352e15e08d",
+        "x": 770,
+        "y": 220,
         "wires": []
+    },
+    {
+        "id": "7d76127d2725fd6c",
+        "type": "function",
+        "z": "f222cff05c62ff60",
+        "name": "create NO NEW data",
+        "func": "var count = context.get('count') || 0;\ncount += 1;\ncontext.set('count', count);\nvar timestamp = String(Math.floor(msg.timestamp / 1000));\nmsg.payload =  timestamp + \",\";\nmsg.payload += \"0x\" + String(count).padStart(4, '0') + \",\";\nmsg.payload += \"NO_NEW_DATA,\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload +=  \"-Read_Coil-Illegal address\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload += \"-Read_Discrete_Input-Illegal address\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload += \"-Read_Holding_Registers-Illegal address\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload += \"-Read_Input_Registers-Illegal address\\n\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 240,
+        "wires": [
+            [
+                "f1400404f406ca0c",
+                "8a73cb5742c72358"
+            ]
+        ]
+    },
+    {
+        "id": "610ae7393bae89ee",
+        "type": "debug",
+        "z": "f222cff05c62ff60",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "fec7a14961374b29",
+        "type": "mqtt in",
+        "z": "f222cff05c62ff60",
+        "name": "",
+        "topic": "${MQTT_TOPIC_DATETIME}",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "eb6b0f352e15e08d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 240,
+        "y": 420,
+        "wires": [
+            [
+                "610ae7393bae89ee"
+            ]
+        ]
     },
     {
         "id": "0fc418d3e8215aed",
@@ -423,7 +451,7 @@
         "topic": "${MQTT_TOPIC_DATA}",
         "qos": "2",
         "datatype": "auto-detect",
-        "broker": "300efc65cc866143",
+        "broker": "eb6b0f352e15e08d",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -766,7 +794,7 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "300efc65cc866143",
+        "broker": "eb6b0f352e15e08d",
         "x": 710,
         "y": 120,
         "wires": []
