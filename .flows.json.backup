@@ -3,7 +3,7 @@
         "id": "f222cff05c62ff60",
         "type": "tab",
         "label": "Dummy Scanner",
-        "disabled": false,
+        "disabled": true,
         "info": "",
         "env": []
     },
@@ -559,7 +559,7 @@
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Current address",
+        "label": "Last address",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
@@ -567,7 +567,7 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 740,
+        "x": 730,
         "y": 160,
         "wires": []
     },

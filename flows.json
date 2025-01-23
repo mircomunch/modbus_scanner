@@ -559,7 +559,7 @@
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Current address",
+        "label": "Last address",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
@@ -567,7 +567,7 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 740,
+        "x": 730,
         "y": 160,
         "wires": []
     },
@@ -963,7 +963,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 110,
+        "x": 210,
         "y": 120,
         "wires": [
             [
@@ -979,7 +979,7 @@
         "sqlquery": "msg.topic",
         "sql": "SELECT DISTINCT\n    address\nFROM\n    $BOARD_ID\nORDER BY\n    address ASC;",
         "name": "",
-        "x": 530,
+        "x": 630,
         "y": 120,
         "wires": [
             [
@@ -999,7 +999,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 300,
+        "x": 400,
         "y": 220,
         "wires": [
             [
@@ -1026,7 +1026,7 @@
         "topic": "topic",
         "topicType": "msg",
         "className": "",
-        "x": 460,
+        "x": 560,
         "y": 220,
         "wires": [
             [
@@ -1053,7 +1053,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 660,
+        "x": 760,
         "y": 220,
         "wires": [
             [
@@ -1069,7 +1069,7 @@
         "sqlquery": "msg.topic",
         "sql": "",
         "name": "",
-        "x": 490,
+        "x": 590,
         "y": 380,
         "wires": [
             [
@@ -1089,7 +1089,7 @@
         "syntax": "mustache",
         "template": "SELECT\n    fn_name,timestamp,content\nFROM\n    {{env.BOARD_ID}}\nWHERE\n    address=\"{{global.selectedAddress}}\"\nORDER BY\n    timestamp DESC;",
         "output": "str",
-        "x": 300,
+        "x": 400,
         "y": 380,
         "wires": [
             [
@@ -1140,7 +1140,7 @@
         ],
         "outputs": 0,
         "cts": false,
-        "x": 830,
+        "x": 930,
         "y": 380,
         "wires": []
     },
@@ -1157,7 +1157,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 660,
+        "x": 760,
         "y": 340,
         "wires": []
     },
@@ -1169,7 +1169,7 @@
         "links": [
             "499e1d9a3b132622"
         ],
-        "x": 145,
+        "x": 245,
         "y": 80,
         "wires": [
             [
@@ -1188,7 +1188,7 @@
         "syntax": "mustache",
         "template": "SELECT DISTINCT\n    address\nFROM\n    {{env.BOARD_ID}}\nORDER BY\n    address ASC;",
         "output": "str",
-        "x": 330,
+        "x": 430,
         "y": 120,
         "wires": [
             [
@@ -1208,7 +1208,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 680,
+        "x": 780,
         "y": 380,
         "wires": [
             [
@@ -1236,7 +1236,7 @@
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 100,
+        "x": 200,
         "y": 160,
         "wires": [
             [
@@ -1252,7 +1252,7 @@
         "links": [
             "bd1cf3cddf5c0c08"
         ],
-        "x": 145,
+        "x": 245,
         "y": 400,
         "wires": [
             [
