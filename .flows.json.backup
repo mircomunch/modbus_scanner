@@ -1,6 +1,14 @@
 [
     {
-        "id": "6c3e8355e6babcc3",
+        "id": "f222cff05c62ff60",
+        "type": "tab",
+        "label": "Dummy Scanner",
+        "disabled": true,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f9fc74821ea183a4",
         "type": "tab",
         "label": "Receive from device",
         "disabled": false,
@@ -8,17 +16,33 @@
         "env": []
     },
     {
-        "id": "50b29753e919b97e",
+        "id": "ecbd6b1f6281af5a",
         "type": "tab",
-        "label": "Read from file",
+        "label": "Datetime",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "c4d0bcacbbd07b78",
+        "id": "ae59162780495ec0",
         "type": "tab",
-        "label": "Datetime",
+        "label": "Startup",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "457756dc470fc3f0",
+        "type": "tab",
+        "label": "List Addr",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "578cd3ed36ceeb60",
+        "type": "tab",
+        "label": "Records",
         "disabled": false,
         "info": "",
         "env": []
@@ -54,25 +78,6 @@
         "willMsg": {},
         "userProps": "",
         "sessionExpiry": ""
-    },
-    {
-        "id": "d4687e765b4d58cd",
-        "type": "ui_tab",
-        "name": "Home",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
-    },
-    {
-        "id": "cdcd3343ef7525a1",
-        "type": "ui_group",
-        "name": "Select",
-        "tab": "d4687e765b4d58cd",
-        "order": 2,
-        "disp": false,
-        "width": "6",
-        "collapse": false,
-        "className": ""
     },
     {
         "id": "300efc65cc866143",
@@ -116,39 +121,19 @@
     {
         "id": "19524a9398e9bb7c",
         "type": "ui_group",
-        "name": "Cmd",
+        "name": "Records",
         "tab": "849bd61f7fc501af",
         "order": 1,
         "disp": false,
-        "width": "6",
+        "width": "22",
         "collapse": false,
         "className": ""
     },
     {
         "id": "7e1671a5d7023afa",
         "type": "sqlitedb",
-        "db": "C:\\Users\\mirco\\Desktop\\modbus_scanner.db",
+        "db": "${DB_PATH}",
         "mode": "RWC"
-    },
-    {
-        "id": "fe8897304a518907",
-        "type": "ui_tab",
-        "name": "Home",
-        "icon": "dashboard",
-        "order": 4,
-        "disabled": false,
-        "hidden": false
-    },
-    {
-        "id": "b49b6639dd17147e",
-        "type": "ui_group",
-        "name": "State",
-        "tab": "d4687e765b4d58cd",
-        "order": 1,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
     },
     {
         "id": "7381dac1204ca225",
@@ -248,11 +233,201 @@
         }
     },
     {
-        "id": "722ed76cb2538e3c",
-        "type": "mqtt in",
-        "z": "6c3e8355e6babcc3",
+        "id": "1ebf16ab1620d1a9",
+        "type": "global-config",
+        "name": "global-config",
+        "env": [
+            {
+                "name": "BOARD_ID",
+                "value": "esp32_busengo",
+                "type": "str"
+            },
+            {
+                "name": "DB_PATH",
+                "value": "/data/scanner.db",
+                "type": "str"
+            },
+            {
+                "name": "ERROR_LOG_PATH",
+                "value": "/data/scanner_error_log.txt",
+                "type": "str"
+            },
+            {
+                "name": "MQTT_TOPIC_DATA",
+                "value": "modbus_scanner/data",
+                "type": "str"
+            },
+            {
+                "name": "MQTT_TOPIC_DATETIME",
+                "value": "modbus_scanner/datetime",
+                "type": "str"
+            }
+        ]
+    },
+    {
+        "id": "59c819e0c987577c",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "083cad7205d82a78",
+        "type": "ui_group",
+        "name": "Info",
+        "tab": "59c819e0c987577c",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b49b6639dd17147e",
+        "type": "ui_group",
+        "name": "Select",
+        "tab": "59c819e0c987577c",
+        "order": 2,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "256c6f3db26801b5",
+        "type": "ui_spacer",
+        "z": "457756dc470fc3f0",
+        "name": "spacer",
+        "group": "b49b6639dd17147e",
+        "order": 2,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "8b3bcffbde16341d",
+        "type": "inject",
+        "z": "f222cff05c62ff60",
         "name": "",
-        "topic": "modbus_scanner/data",
+        "props": [
+            {
+                "p": "timestamp",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 160,
+        "wires": [
+            [
+                "7d76127d2725fd6c"
+            ]
+        ]
+    },
+    {
+        "id": "744a9af79fdb1269",
+        "type": "function",
+        "z": "f222cff05c62ff60",
+        "d": true,
+        "name": "create data",
+        "func": "let fn_names = [\"Read_Coil\", \"Read_Discrete_Input\", \"Read_Holding_Registers\", \"Read_Input_Registers\",];\nlet fn_codes = [\"fn_1\", \"fn_2\", \"fn_3\", \"fn_4\",];\nvar count = context.get('count') || 0;\ncount += 1;\ncontext.set('count', count);\nvar timestamp = String(Math.floor(msg.timestamp / 1000));\n\nvar isData = Math.floor(Math.random() * 2);\nif (isData) {\n    var fn_index = Math.floor(Math.random() * 4);\n    var content = Math.floor(Math.random() * 1000);\n\n    msg.payload =  timestamp + \",\";\n    msg.payload += \"0x\" + String(count).padStart(4, '0') + \",\";\n    msg.payload += String(fn_names[fn_index]) + \",\";\n    msg.payload += String(fn_codes[fn_index]) + \",\";\n    msg.payload += String(content);\n}\nelse {\n    msg.payload =  timestamp + \",\";\n    msg.payload += \"0x\" + String(count).padStart(4, '0') + \",\";\n    msg.payload += \"NO_NEW_DATA,\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload +=  \"-Read_Coil-Illegal address\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload += \"-Read_Discrete_Input-Illegal address\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload += \"-Read_Holding_Registers-Illegal address\\n\";\n    msg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\n    msg.payload += \"-Read_Input_Registers-Illegal address\\n\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 120,
+        "wires": [
+            [
+                "8a73cb5742c72358",
+                "f1400404f406ca0c"
+            ]
+        ]
+    },
+    {
+        "id": "8a73cb5742c72358",
+        "type": "debug",
+        "z": "f222cff05c62ff60",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "f1400404f406ca0c",
+        "type": "mqtt out",
+        "z": "f222cff05c62ff60",
+        "name": "",
+        "topic": "${MQTT_TOPIC_DATA}",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eb6b0f352e15e08d",
+        "x": 770,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "7d76127d2725fd6c",
+        "type": "function",
+        "z": "f222cff05c62ff60",
+        "name": "create NO NEW data",
+        "func": "var count = context.get('count') || 0;\ncount += 1;\ncontext.set('count', count);\nvar timestamp = String(Math.floor(msg.timestamp / 1000));\nmsg.payload =  timestamp + \",\";\nmsg.payload += \"0x\" + String(count).padStart(4, '0') + \",\";\nmsg.payload += \"NO_NEW_DATA,\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload +=  \"-Read_Coil-Illegal address\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload += \"-Read_Discrete_Input-Illegal address\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload += \"-Read_Holding_Registers-Illegal address\\n\";\nmsg.payload += \"Addr:\" + \"0x\" + String(count).padStart(4, '0');\nmsg.payload += \"-Read_Input_Registers-Illegal address\\n\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 240,
+        "wires": [
+            [
+                "f1400404f406ca0c",
+                "8a73cb5742c72358"
+            ]
+        ]
+    },
+    {
+        "id": "610ae7393bae89ee",
+        "type": "debug",
+        "z": "f222cff05c62ff60",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "fec7a14961374b29",
+        "type": "mqtt in",
+        "z": "f222cff05c62ff60",
+        "name": "",
+        "topic": "${MQTT_TOPIC_DATETIME}",
         "qos": "2",
         "datatype": "auto-detect",
         "broker": "eb6b0f352e15e08d",
@@ -260,20 +435,43 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 220,
-        "y": 100,
+        "x": 240,
+        "y": 420,
         "wires": [
             [
-                "d7879af4505b84b7",
-                "822bbb866f1d94c6"
+                "610ae7393bae89ee"
             ]
         ]
     },
     {
-        "id": "d7879af4505b84b7",
+        "id": "0fc418d3e8215aed",
+        "type": "mqtt in",
+        "z": "f9fc74821ea183a4",
+        "name": "",
+        "topic": "${MQTT_TOPIC_DATA}",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "eb6b0f352e15e08d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "04c528cc642dc953",
+                "24b3d43882f9aeb2",
+                "22f27e8b2459f8bd",
+                "b948075981196c49"
+            ]
+        ]
+    },
+    {
+        "id": "04c528cc642dc953",
         "type": "debug",
-        "z": "6c3e8355e6babcc3",
-        "name": "debug 1",
+        "z": "f9fc74821ea183a4",
+        "name": "debug 9",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -281,14 +479,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 440,
-        "y": 100,
+        "x": 380,
+        "y": 80,
         "wires": []
     },
     {
-        "id": "822bbb866f1d94c6",
+        "id": "24b3d43882f9aeb2",
         "type": "switch",
-        "z": "6c3e8355e6babcc3",
+        "z": "f9fc74821ea183a4",
         "name": "",
         "property": "payload",
         "propertyType": "msg",
@@ -305,27 +503,25 @@
         "checkall": "true",
         "repair": false,
         "outputs": 2,
-        "x": 430,
-        "y": 240,
+        "x": 370,
+        "y": 280,
         "wires": [
             [
-                "57641d2215fa2fb9",
-                "f8a145859f46f2d8",
-                "ca37a941403a3e42"
+                "2582cf641c638ab7",
+                "fac4efe00feed4df"
             ],
             [
-                "9596de1c97172996",
-                "b0221d9ce10f02e0",
-                "5600e8b1cb6fc767",
-                "8ff4d018e28daf74"
+                "76e478013546d806",
+                "ce088e785d2ca531",
+                "bd1cf3cddf5c0c08"
             ]
         ]
     },
     {
-        "id": "57641d2215fa2fb9",
+        "id": "2582cf641c638ab7",
         "type": "debug",
-        "z": "6c3e8355e6babcc3",
-        "name": "debug 2",
+        "z": "f9fc74821ea183a4",
+        "name": "debug 10",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -334,15 +530,15 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 620,
-        "y": 220,
+        "x": 520,
+        "y": 260,
         "wires": []
     },
     {
-        "id": "9596de1c97172996",
+        "id": "76e478013546d806",
         "type": "debug",
-        "z": "6c3e8355e6babcc3",
-        "name": "debug 3",
+        "z": "f9fc74821ea183a4",
+        "name": "debug 11",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -350,37 +546,20 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 620,
-        "y": 260,
+        "x": 520,
+        "y": 300,
         "wires": []
     },
     {
-        "id": "b0221d9ce10f02e0",
-        "type": "file",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "filename": "C:\\Users\\mirco\\Desktop\\modbus_scanner_log.txt",
-        "filenameType": "str",
-        "appendNewline": false,
-        "createDir": false,
-        "overwriteFile": "false",
-        "encoding": "none",
-        "x": 750,
-        "y": 300,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "faa339c9ab75e9c6",
+        "id": "79277f275a52ed57",
         "type": "ui_text",
-        "z": "6c3e8355e6babcc3",
-        "group": "b49b6639dd17147e",
+        "z": "f9fc74821ea183a4",
+        "group": "083cad7205d82a78",
         "order": 2,
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Current address",
+        "label": "Last address",
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
@@ -388,15 +567,15 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 800,
-        "y": 180,
+        "x": 730,
+        "y": 160,
         "wires": []
     },
     {
-        "id": "3b7a2f10777fe4cd",
+        "id": "726f14dec436486c",
         "type": "ui_text",
-        "z": "6c3e8355e6babcc3",
-        "group": "b49b6639dd17147e",
+        "z": "f9fc74821ea183a4",
+        "group": "083cad7205d82a78",
         "order": 1,
         "width": 0,
         "height": 0,
@@ -409,335 +588,188 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 780,
-        "y": 140,
+        "x": 720,
+        "y": 120,
         "wires": []
     },
     {
-        "id": "5600e8b1cb6fc767",
-        "type": "link out",
-        "z": "6c3e8355e6babcc3",
-        "name": "received new address",
-        "mode": "link",
-        "links": [
-            "b21cc1db0fed6403"
-        ],
-        "x": 575,
-        "y": 340,
-        "wires": []
-    },
-    {
-        "id": "7324c9bb74f0be5d",
-        "type": "inject",
-        "z": "6c3e8355e6babcc3",
-        "name": "Startup",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "timestamp,address,fn_name,fn_code,content",
-        "payloadType": "str",
-        "x": 430,
-        "y": 300,
-        "wires": [
-            [
-                "b0221d9ce10f02e0"
-            ]
-        ]
-    },
-    {
-        "id": "f8a145859f46f2d8",
+        "id": "b948075981196c49",
         "type": "function",
-        "z": "6c3e8355e6babcc3",
-        "name": "function 1",
-        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[2]){\n    msg.payload = current_addr[2];\n} else{\n    msg.payload = \"-\";\n}\nreturn msg;",
+        "z": "f9fc74821ea183a4",
+        "name": "parse addr",
+        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[1]){\n    msg.payload = current_addr[1];\n} else{\n    msg.payload = \"-\";\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 620,
-        "y": 180,
+        "x": 530,
+        "y": 160,
         "wires": [
             [
-                "faa339c9ab75e9c6"
+                "79277f275a52ed57"
             ]
         ]
     },
     {
-        "id": "8ff4d018e28daf74",
+        "id": "ce088e785d2ca531",
         "type": "csv",
-        "z": "6c3e8355e6babcc3",
+        "z": "f9fc74821ea183a4",
         "name": "",
         "sep": ",",
-        "hdrin": true,
+        "hdrin": false,
         "hdrout": "none",
-        "multi": "mult",
+        "multi": "one",
         "ret": "\\n",
         "temp": "timestamp,address,function_name,function_code,content",
         "skip": "0",
         "strings": false,
         "include_empty_strings": false,
         "include_null_values": "",
-        "x": 610,
-        "y": 400,
+        "x": 510,
+        "y": 380,
         "wires": [
             [
-                "807ff4ae20232984"
+                "e308c55e602918ae"
             ]
         ]
     },
     {
-        "id": "d55276cde44d38f3",
+        "id": "3d807768d53963f9",
         "type": "sqlite",
-        "z": "6c3e8355e6babcc3",
+        "z": "f9fc74821ea183a4",
         "mydb": "7e1671a5d7023afa",
         "sqlquery": "msg.topic",
         "sql": "",
         "name": "",
-        "x": 730,
-        "y": 480,
+        "x": 890,
+        "y": 380,
         "wires": [
             []
         ]
     },
     {
-        "id": "c58d79f7bd1a905c",
+        "id": "e308c55e602918ae",
         "type": "template",
-        "z": "6c3e8355e6babcc3",
+        "z": "f9fc74821ea183a4",
         "name": "INSERT INTO board_id",
         "field": "topic",
         "fieldType": "msg",
         "format": "handlebars",
         "syntax": "mustache",
-        "template": "INSERT INTO esp32_mirco VALUES\n({{payload.timestamp}},\"{{payload.address}}\",\"{{payload.function_name}}\",\"{{payload.function_code}}\",{{payload.content}});",
+        "template": "INSERT INTO\n    {{env.BOARD_ID}}\nVALUES\n({{payload.timestamp}},\n\"{{payload.address}}\",\n\"{{payload.function_name}}\",\n\"{{payload.function_code}}\",\n{{payload.content}});",
         "output": "str",
-        "x": 910,
-        "y": 400,
+        "x": 690,
+        "y": 380,
         "wires": [
             [
-                "d55276cde44d38f3"
+                "3d807768d53963f9"
             ]
         ]
     },
     {
-        "id": "807ff4ae20232984",
-        "type": "split",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 730,
-        "y": 400,
-        "wires": [
-            [
-                "c58d79f7bd1a905c"
-            ]
-        ]
-    },
-    {
-        "id": "3d0d09fbcf544a02",
-        "type": "inject",
-        "z": "6c3e8355e6babcc3",
-        "name": "",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 480,
-        "wires": [
-            [
-                "55988a87e4af90ae",
-                "fd04ec96c409a96b"
-            ]
-        ]
-    },
-    {
-        "id": "55988a87e4af90ae",
-        "type": "template",
-        "z": "6c3e8355e6babcc3",
-        "name": "CREATE TABLE board_id",
-        "field": "topic",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "CREATE TABLE IF NOT EXISTS esp32_mirco (timestamp INTEGER, address TEXT, fn_name TEXT, fn_code TEXT, content INTEGER);",
-        "output": "str",
-        "x": 370,
-        "y": 480,
-        "wires": [
-            [
-                "d55276cde44d38f3"
-            ]
-        ]
-    },
-    {
-        "id": "ca0b9de6ff67c5f6",
-        "type": "template",
-        "z": "6c3e8355e6babcc3",
-        "name": "DROP TABLE board_id",
-        "field": "topic",
-        "fieldType": "msg",
-        "format": "handlebars",
-        "syntax": "mustache",
-        "template": "DROP TABLE esp32_mirco;",
-        "output": "str",
-        "x": 370,
-        "y": 520,
-        "wires": [
-            [
-                "d55276cde44d38f3"
-            ]
-        ]
-    },
-    {
-        "id": "6dca357c60d552e3",
-        "type": "inject",
-        "z": "6c3e8355e6babcc3",
-        "name": "Drop",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 520,
-        "wires": [
-            [
-                "ca0b9de6ff67c5f6"
-            ]
-        ]
-    },
-    {
-        "id": "48a3281a57c9ef48",
-        "type": "link in",
-        "z": "6c3e8355e6babcc3",
-        "name": "write to db",
-        "links": [
-            "307b8d53d6ead723"
-        ],
-        "x": 635,
-        "y": 360,
-        "wires": [
-            [
-                "807ff4ae20232984"
-            ]
-        ]
-    },
-    {
-        "id": "fd04ec96c409a96b",
-        "type": "link out",
-        "z": "6c3e8355e6babcc3",
-        "name": "startup settings",
-        "mode": "link",
-        "links": [
-            "9505e5e928e14854"
-        ],
-        "x": 275,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "ca37a941403a3e42",
+        "id": "22f27e8b2459f8bd",
         "type": "function",
-        "z": "6c3e8355e6babcc3",
-        "name": "function 2",
-        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[0]){\n    msg.payload = current_addr[0];\n} else{\n    msg.payload = \"-\";\n}\nreturn msg;",
+        "z": "f9fc74821ea183a4",
+        "name": "parse datetime",
+        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[0]){\n    var date = new Date(current_addr[0] * 1000);\n    var lastseen = \"\" + ((date.getHours() < 10 ? '0' : '') + date.getHours()) + \":\" +\n        ((date.getMinutes() < 10 ? '0' : '') + date.getMinutes()) + \":\" +\n        ((date.getSeconds() < 10 ? '0' : '') + date.getSeconds()) + \" \" +\n        ((date.getDate() < 10 ? '0' : '') + date.getDate()) + \"/\" +\n        (((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1)) + \"/\" +\n        date.getFullYear();\n    msg.payload = lastseen;\n} else{\n    msg.payload = \"-\";\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 620,
-        "y": 140,
+        "x": 540,
+        "y": 120,
         "wires": [
             [
-                "3b7a2f10777fe4cd"
+                "726f14dec436486c"
             ]
         ]
     },
     {
-        "id": "acd3a24a29f31ca9",
-        "type": "file in",
-        "z": "50b29753e919b97e",
+        "id": "fac4efe00feed4df",
+        "type": "function",
+        "z": "f9fc74821ea183a4",
+        "name": "parse error",
+        "func": "let current_addr = msg.payload.split(\",\");\nif(current_addr[3]){\n    msg.payload = current_addr[0] + \"\\n\" + current_addr[3];\n} else{\n    msg.payload = \"\";\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 220,
+        "wires": [
+            [
+                "51bd376b75f6bfc4"
+            ]
+        ]
+    },
+    {
+        "id": "51bd376b75f6bfc4",
+        "type": "file",
+        "z": "f9fc74821ea183a4",
         "name": "",
-        "filename": "C:\\Users\\mirco\\Desktop\\modbus_scanner_log.txt",
+        "filename": "${ERROR_LOG_PATH}",
         "filenameType": "str",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "false",
         "encoding": "none",
-        "allProps": false,
-        "x": 410,
-        "y": 80,
+        "x": 770,
+        "y": 220,
         "wires": [
-            [
-                "80634cdde06d87d5"
-            ]
+            []
         ]
     },
     {
-        "id": "b21cc1db0fed6403",
-        "type": "link in",
-        "z": "50b29753e919b97e",
-        "name": "update reading",
+        "id": "bd1cf3cddf5c0c08",
+        "type": "link out",
+        "z": "f9fc74821ea183a4",
+        "name": "new content",
+        "mode": "link",
         "links": [
-            "5600e8b1cb6fc767"
+            "d33bc9e4c30a946e",
+            "5761cc2bcca06c0e"
         ],
-        "x": 165,
-        "y": 40,
-        "wires": [
-            [
-                "acd3a24a29f31ca9"
-            ]
-        ]
+        "x": 475,
+        "y": 420,
+        "wires": []
     },
     {
-        "id": "80634cdde06d87d5",
-        "type": "csv",
-        "z": "50b29753e919b97e",
+        "id": "d64597154a643a0e",
+        "type": "inject",
+        "z": "ecbd6b1f6281af5a",
         "name": "",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "none",
-        "multi": "mult",
-        "ret": "\\n",
-        "temp": "timestamp,address,function_name,function_code,content",
-        "skip": "0",
-        "strings": false,
-        "include_empty_strings": false,
-        "include_null_values": "",
-        "x": 690,
-        "y": 80,
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 100,
         "wires": [
             [
-                "06ab7d59df7eb2be",
-                "87b20b7fed27c053",
-                "307b8d53d6ead723"
+                "603e0773bd404ddf",
+                "fcb29947d09868e3"
             ]
         ]
     },
     {
-        "id": "06ab7d59df7eb2be",
+        "id": "603e0773bd404ddf",
         "type": "debug",
-        "z": "50b29753e919b97e",
-        "name": "debug 5",
+        "z": "ecbd6b1f6281af5a",
+        "name": "debug 12",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -745,14 +777,185 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 840,
-        "y": 80,
+        "x": 380,
+        "y": 60,
         "wires": []
     },
     {
-        "id": "2671f546ed483501",
+        "id": "6920277f6fd068ee",
+        "type": "mqtt out",
+        "z": "ecbd6b1f6281af5a",
+        "name": "",
+        "topic": "${MQTT_TOPIC_DATETIME}",
+        "qos": "2",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eb6b0f352e15e08d",
+        "x": 710,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "fcb29947d09868e3",
+        "type": "function",
+        "z": "ecbd6b1f6281af5a",
+        "name": "timestamp from ms to s",
+        "func": "msg.payload = Math.round(msg.payload / 1000);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "6920277f6fd068ee"
+            ]
+        ]
+    },
+    {
+        "id": "3c1a342135abe490",
+        "type": "ui_button",
+        "z": "ecbd6b1f6281af5a",
+        "name": "",
+        "group": "083cad7205d82a78",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Update Datetime",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "date",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 170,
+        "y": 160,
+        "wires": [
+            [
+                "fcb29947d09868e3"
+            ]
+        ]
+    },
+    {
+        "id": "7b570af3410e2533",
         "type": "inject",
-        "z": "50b29753e919b97e",
+        "z": "ae59162780495ec0",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 100,
+        "wires": [
+            [
+                "c1a262d072440302",
+                "499e1d9a3b132622"
+            ]
+        ]
+    },
+    {
+        "id": "c1a262d072440302",
+        "type": "template",
+        "z": "ae59162780495ec0",
+        "name": "CREATE TABLE board_id",
+        "field": "topic",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "CREATE TABLE IF NOT EXISTS\n    {{env.BOARD_ID}}\n(timestamp INTEGER, address TEXT, fn_name TEXT, fn_code TEXT, content INTEGER);",
+        "output": "str",
+        "x": 410,
+        "y": 100,
+        "wires": [
+            [
+                "840ad47a2838526f"
+            ]
+        ]
+    },
+    {
+        "id": "0ffbd6980947dbe2",
+        "type": "template",
+        "z": "ae59162780495ec0",
+        "name": "DROP TABLE board_id",
+        "field": "topic",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "DROP TABLE \n    {{env.BOARD_ID}};",
+        "output": "str",
+        "x": 410,
+        "y": 140,
+        "wires": [
+            [
+                "840ad47a2838526f"
+            ]
+        ]
+    },
+    {
+        "id": "1db7db2b9b8b64b1",
+        "type": "inject",
+        "z": "ae59162780495ec0",
+        "name": "Drop",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 140,
+        "wires": [
+            [
+                "0ffbd6980947dbe2"
+            ]
+        ]
+    },
+    {
+        "id": "840ad47a2838526f",
+        "type": "sqlite",
+        "z": "ae59162780495ec0",
+        "mydb": "7e1671a5d7023afa",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 610,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "499e1d9a3b132622",
+        "type": "link out",
+        "z": "ae59162780495ec0",
+        "name": "startup",
+        "mode": "link",
+        "links": [
+            "09932e8068bc0314",
+            "5761cc2bcca06c0e"
+        ],
+        "x": 315,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "0a5fd8691c245ee8",
+        "type": "inject",
+        "z": "457756dc470fc3f0",
         "name": "Refresh",
         "props": [],
         "repeat": "",
@@ -760,63 +963,35 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 130,
-        "y": 80,
-        "wires": [
-            [
-                "acd3a24a29f31ca9"
-            ]
-        ]
-    },
-    {
-        "id": "9e0734fdfb6369df",
-        "type": "ui_button",
-        "z": "50b29753e919b97e",
-        "name": "",
-        "group": "19524a9398e9bb7c",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "label": "Refresh",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 120,
+        "x": 210,
         "y": 120,
         "wires": [
             [
-                "acd3a24a29f31ca9"
+                "e9ecc55360dc3542"
             ]
         ]
     },
     {
-        "id": "87b20b7fed27c053",
+        "id": "fc09fc3c383ed1b4",
         "type": "sqlite",
-        "z": "50b29753e919b97e",
+        "z": "457756dc470fc3f0",
         "mydb": "7e1671a5d7023afa",
-        "sqlquery": "fixed",
-        "sql": "SELECT DISTINCT\n    address\nFROM\n    esp32_mirco\nORDER BY\n    address ASC;",
-        "name": "select all available address",
-        "x": 320,
-        "y": 260,
+        "sqlquery": "msg.topic",
+        "sql": "SELECT DISTINCT\n    address\nFROM\n    $BOARD_ID\nORDER BY\n    address ASC;",
+        "name": "",
+        "x": 630,
+        "y": 120,
         "wires": [
             [
-                "3cde4a6fbcbf40fa"
+                "0881066b3dfe0328"
             ]
         ]
     },
     {
-        "id": "3cde4a6fbcbf40fa",
+        "id": "0881066b3dfe0328",
         "type": "function",
-        "z": "50b29753e919b97e",
-        "name": "set ids",
+        "z": "457756dc470fc3f0",
+        "name": "set dropdown",
         "func": "msg.options = [];\nfor (let index = 0; index < msg.payload.length; index++) {\n    const addr = msg.payload[index].address;\n    msg.options.push(addr);\n}\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
@@ -824,26 +999,26 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 510,
-        "y": 260,
+        "x": 400,
+        "y": 220,
         "wires": [
             [
-                "809e1b370265e5b2"
+                "38a66270daaa39ec"
             ]
         ]
     },
     {
-        "id": "809e1b370265e5b2",
+        "id": "38a66270daaa39ec",
         "type": "ui_dropdown",
-        "z": "50b29753e919b97e",
+        "z": "457756dc470fc3f0",
         "name": "",
         "label": "Address:",
         "tooltip": "",
         "place": "Select option",
-        "group": "cdcd3343ef7525a1",
+        "group": "b49b6639dd17147e",
         "order": 1,
-        "width": 0,
-        "height": 0,
+        "width": 7,
+        "height": 1,
         "passthru": true,
         "multiple": false,
         "options": [],
@@ -851,18 +1026,18 @@
         "topic": "topic",
         "topicType": "msg",
         "className": "",
-        "x": 640,
-        "y": 260,
+        "x": 560,
+        "y": 220,
         "wires": [
             [
-                "9a1c90b91b4ce4ab"
+                "61a1fc5343577b5f"
             ]
         ]
     },
     {
-        "id": "9a1c90b91b4ce4ab",
+        "id": "61a1fc5343577b5f",
         "type": "change",
-        "z": "50b29753e919b97e",
+        "z": "457756dc470fc3f0",
         "name": "",
         "rules": [
             {
@@ -878,90 +1053,59 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 840,
-        "y": 260,
+        "x": 760,
+        "y": 220,
         "wires": [
             [
-                "c46f06b431ecc9c6"
+                "eaa85f78473dc59c"
             ]
         ]
     },
     {
-        "id": "efac2f67b2410f34",
+        "id": "dd5a4b44bff2cb07",
         "type": "sqlite",
-        "z": "50b29753e919b97e",
+        "z": "457756dc470fc3f0",
         "mydb": "7e1671a5d7023afa",
         "sqlquery": "msg.topic",
         "sql": "",
-        "name": "select single address contents",
-        "x": 470,
-        "y": 320,
+        "name": "",
+        "x": 590,
+        "y": 380,
         "wires": [
             [
-                "a86abeb2930a4acb",
-                "1157442f5c1f3135"
+                "886413337e75aaea",
+                "57acaf6b786da971"
             ]
         ]
     },
     {
-        "id": "7dc2c9ae95b7b2c5",
-        "type": "debug",
-        "z": "50b29753e919b97e",
-        "name": "debug 6",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 980,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "307b8d53d6ead723",
-        "type": "link out",
-        "z": "50b29753e919b97e",
-        "d": true,
-        "name": "csv file output",
-        "mode": "link",
-        "links": [
-            "48a3281a57c9ef48"
-        ],
-        "x": 795,
-        "y": 140,
-        "wires": []
-    },
-    {
-        "id": "c46f06b431ecc9c6",
+        "id": "eaa85f78473dc59c",
         "type": "template",
-        "z": "50b29753e919b97e",
-        "name": "",
+        "z": "457756dc470fc3f0",
+        "name": "SELECT by address",
         "field": "topic",
         "fieldType": "msg",
         "format": "handlebars",
         "syntax": "mustache",
-        "template": "SELECT\n    fn_name,timestamp,content\nFROM\n    esp32_mirco\nWHERE\n    address=\"{{global.selectedAddress}}\"\nORDER BY\n    timestamp ASC;",
+        "template": "SELECT\n    fn_name,timestamp,content\nFROM\n    {{env.BOARD_ID}}\nWHERE\n    address=\"{{global.selectedAddress}}\"\nORDER BY\n    timestamp DESC;",
         "output": "str",
-        "x": 260,
-        "y": 320,
+        "x": 400,
+        "y": 380,
         "wires": [
             [
-                "efac2f67b2410f34"
+                "dd5a4b44bff2cb07"
             ]
         ]
     },
     {
-        "id": "1157442f5c1f3135",
+        "id": "90f545e84471cc0a",
         "type": "ui_table",
-        "z": "50b29753e919b97e",
-        "group": "cdcd3343ef7525a1",
+        "z": "457756dc470fc3f0",
+        "group": "b49b6639dd17147e",
         "name": "",
-        "order": 1,
-        "width": 0,
-        "height": 0,
+        "order": 4,
+        "width": "12",
+        "height": "10",
         "columns": [
             {
                 "field": "fn_name",
@@ -996,35 +1140,16 @@
         ],
         "outputs": 0,
         "cts": false,
-        "x": 690,
-        "y": 320,
+        "x": 930,
+        "y": 380,
         "wires": []
     },
     {
-        "id": "047cda4da97ffebe",
-        "type": "inject",
-        "z": "50b29753e919b97e",
-        "name": "Refresh",
-        "props": [],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 190,
-        "y": 400,
-        "wires": [
-            [
-                "c46f06b431ecc9c6"
-            ]
-        ]
-    },
-    {
-        "id": "a86abeb2930a4acb",
+        "id": "886413337e75aaea",
         "type": "debug",
-        "z": "50b29753e919b97e",
-        "name": "debug 7",
-        "active": true,
+        "z": "457756dc470fc3f0",
+        "name": "debug 15",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1032,103 +1157,445 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 680,
-        "y": 380,
+        "x": 760,
+        "y": 340,
         "wires": []
     },
     {
-        "id": "9505e5e928e14854",
+        "id": "09932e8068bc0314",
         "type": "link in",
-        "z": "50b29753e919b97e",
-        "name": "update address dropdown list",
+        "z": "457756dc470fc3f0",
+        "name": "read db",
         "links": [
-            "fd04ec96c409a96b"
+            "499e1d9a3b132622"
         ],
-        "x": 145,
-        "y": 220,
+        "x": 245,
+        "y": 80,
         "wires": [
             [
-                "87b20b7fed27c053"
+                "e9ecc55360dc3542"
             ]
         ]
     },
     {
-        "id": "7e297add05b79683",
-        "type": "inject",
-        "z": "c4d0bcacbbd07b78",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "300",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 210,
-        "y": 100,
-        "wires": [
-            [
-                "51c79a07dcb571ed",
-                "2210235531134de5"
-            ]
-        ]
-    },
-    {
-        "id": "51c79a07dcb571ed",
-        "type": "debug",
-        "z": "c4d0bcacbbd07b78",
-        "name": "debug 4",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 400,
-        "y": 60,
-        "wires": []
-    },
-    {
-        "id": "1d87e6822a86aa6b",
-        "type": "mqtt out",
-        "z": "c4d0bcacbbd07b78",
-        "name": "",
-        "topic": "modbus_scanner/datetime",
-        "qos": "2",
-        "retain": "false",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "eb6b0f352e15e08d",
-        "x": 720,
+        "id": "e9ecc55360dc3542",
+        "type": "template",
+        "z": "457756dc470fc3f0",
+        "name": "SELECT DISTINCT addr",
+        "field": "topic",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "SELECT DISTINCT\n    address\nFROM\n    {{env.BOARD_ID}}\nORDER BY\n    address ASC;",
+        "output": "str",
+        "x": 430,
         "y": 120,
-        "wires": []
+        "wires": [
+            [
+                "fc09fc3c383ed1b4"
+            ]
+        ]
     },
     {
-        "id": "2210235531134de5",
+        "id": "57acaf6b786da971",
         "type": "function",
-        "z": "c4d0bcacbbd07b78",
-        "name": "timestamp from ms to s",
-        "func": "msg.payload = Math.round(msg.payload / 1000);\nreturn msg;",
+        "z": "457756dc470fc3f0",
+        "name": "parse datetime",
+        "func": "for (let index = 0; index < msg.payload.length; index++) {\n    const element = msg.payload[index];\n    var date = new Date(element.timestamp * 1000);\n    var humanDate = \"\" + ((date.getHours() < 10 ? '0' : '') + date.getHours()) + \":\" +\n        ((date.getMinutes() < 10 ? '0' : '') + date.getMinutes()) + \":\" +\n        ((date.getSeconds() < 10 ? '0' : '') + date.getSeconds()) + \" \" +\n        ((date.getDate() < 10 ? '0' : '') + date.getDate()) + \"/\" +\n        (((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1)) + \"/\" +\n        date.getFullYear();\n    msg.payload[index].timestamp = humanDate;\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 450,
-        "y": 120,
+        "x": 780,
+        "y": 380,
         "wires": [
             [
-                "1d87e6822a86aa6b"
+                "90f545e84471cc0a"
+            ]
+        ]
+    },
+    {
+        "id": "36d7447fc17036a0",
+        "type": "ui_button",
+        "z": "457756dc470fc3f0",
+        "name": "",
+        "group": "b49b6639dd17147e",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "passthru": false,
+        "label": "Refresh address",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [
+                "e9ecc55360dc3542"
+            ]
+        ]
+    },
+    {
+        "id": "d33bc9e4c30a946e",
+        "type": "link in",
+        "z": "457756dc470fc3f0",
+        "name": "update select",
+        "links": [
+            "bd1cf3cddf5c0c08"
+        ],
+        "x": 245,
+        "y": 400,
+        "wires": [
+            [
+                "eaa85f78473dc59c"
+            ]
+        ]
+    },
+    {
+        "id": "5761cc2bcca06c0e",
+        "type": "link in",
+        "z": "578cd3ed36ceeb60",
+        "name": "update Records",
+        "links": [
+            "499e1d9a3b132622",
+            "bd1cf3cddf5c0c08"
+        ],
+        "x": 165,
+        "y": 60,
+        "wires": [
+            [
+                "270e1401e327e368"
+            ]
+        ]
+    },
+    {
+        "id": "270e1401e327e368",
+        "type": "template",
+        "z": "578cd3ed36ceeb60",
+        "name": "SELECT *",
+        "field": "topic",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "SELECT DISTINCT\n    address\nFROM\n    {{env.BOARD_ID}}\nORDER BY\n    address\nASC;",
+        "output": "str",
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "9209c573715b6a8b"
+            ]
+        ]
+    },
+    {
+        "id": "9209c573715b6a8b",
+        "type": "sqlite",
+        "z": "578cd3ed36ceeb60",
+        "mydb": "7e1671a5d7023afa",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 470,
+        "y": 80,
+        "wires": [
+            [
+                "fb17612a3183d71d"
+            ]
+        ]
+    },
+    {
+        "id": "6b9d2fe45aa4df91",
+        "type": "ui_table",
+        "z": "578cd3ed36ceeb60",
+        "group": "19524a9398e9bb7c",
+        "name": "Records",
+        "order": 3,
+        "width": "22",
+        "height": "15",
+        "columns": [
+            {
+                "field": "address",
+                "title": "address",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "t1",
+                "title": "R1",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "r1",
+                "title": "R1",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "t2",
+                "title": "R2",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "r2",
+                "title": "R2",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "t3",
+                "title": "R3",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "r3",
+                "title": "R3",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "t4",
+                "title": "R4",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "r4",
+                "title": "R4",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "t5",
+                "title": "R5",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "r5",
+                "title": "R5",
+                "width": "",
+                "align": "left",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 780,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e23e0f2edd73a1ec",
+        "type": "function",
+        "z": "578cd3ed36ceeb60",
+        "name": "format data",
+        "func": "let query = \"SELECT timestamp,content FROM \" + env.get(\"BOARD_ID\");\nquery += \" WHERE address=\\\"\" + msg.payload.address;\nquery += \"\\\" ORDER BY timestamp DESC;\";\n\nmsg.topic = query;\nmsg.address = msg.payload.address;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 180,
+        "wires": [
+            [
+                "99f0238d9664707f"
+            ]
+        ]
+    },
+    {
+        "id": "99f0238d9664707f",
+        "type": "sqlite",
+        "z": "578cd3ed36ceeb60",
+        "mydb": "7e1671a5d7023afa",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 470,
+        "y": 180,
+        "wires": [
+            [
+                "cfc69383b801a64f"
+            ]
+        ]
+    },
+    {
+        "id": "a0b7cf0b0a4e3a65",
+        "type": "split",
+        "z": "578cd3ed36ceeb60",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 750,
+        "y": 60,
+        "wires": [
+            [
+                "e23e0f2edd73a1ec"
+            ]
+        ]
+    },
+    {
+        "id": "cfc69383b801a64f",
+        "type": "function",
+        "z": "578cd3ed36ceeb60",
+        "name": "format row",
+        "func": "let row = {\n    address: msg.address\n};\nfor (let index = 0; index < msg.payload.length; index++) {\n    const record = msg.payload[index];\n    const time = \"t\" + (index +1);\n    const rec = \"r\" + (index + 1);\n    var date = new Date(record.timestamp * 1000);\n    var humanDate = \"\" + ((date.getHours() < 10 ? '0' : '') + date.getHours()) + \":\" +\n        ((date.getMinutes() < 10 ? '0' : '') + date.getMinutes()) + \":\" +\n        ((date.getSeconds() < 10 ? '0' : '') + date.getSeconds()) + \" \" +\n        ((date.getDate() < 10 ? '0' : '') + date.getDate()) + \"/\" +\n        (((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1)) + \"/\" +\n        date.getFullYear();\n    row[time] = humanDate;\n    row[rec] = record.content; \n}\n\nmsg.payload = row;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 240,
+        "wires": [
+            [
+                "086b3abd458cf9c1"
+            ]
+        ]
+    },
+    {
+        "id": "0b6ae44479afd536",
+        "type": "ui_button",
+        "z": "578cd3ed36ceeb60",
+        "name": "",
+        "group": "19524a9398e9bb7c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Refresh",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "270e1401e327e368"
+            ]
+        ]
+    },
+    {
+        "id": "086b3abd458cf9c1",
+        "type": "join",
+        "z": "578cd3ed36ceeb60",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "5",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 450,
+        "y": 240,
+        "wires": [
+            [
+                "6b9d2fe45aa4df91"
+            ]
+        ]
+    },
+    {
+        "id": "fb17612a3183d71d",
+        "type": "switch",
+        "z": "578cd3ed36ceeb60",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            },
+            {
+                "t": "empty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            [
+                "a0b7cf0b0a4e3a65"
+            ],
+            [
+                "6b9d2fe45aa4df91"
             ]
         ]
     }
