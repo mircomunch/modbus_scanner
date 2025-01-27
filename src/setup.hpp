@@ -1,10 +1,10 @@
-#define TEST
+// #define TEST
 
 #ifdef TEST
-    #define MQTT_AUTH
     #define DEBUG
     #define MQTT_TOPIC "modbus_scanner/test/"
 #else
+    #define MQTT_AUTH
     #define MQTT_TOPIC "modbus_scanner/"
 #endif
 
