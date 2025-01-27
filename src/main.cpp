@@ -58,9 +58,10 @@ void datetimeCallback(const char *topic, byte *payload, unsigned int length)
     {
         datetimePayload += (char)payload[i];
     }
-
-    Serial.print("Received datetime: ");
-    Serial.println(datetimePayload);
+    #ifdef DEBUG
+        SERIAL_DEBUG.print("Received datetime: ");
+        SERIAL_DEBUG.println(datetimePayload);
+    #endif
 
     uint64_t seconds = datetimePayload.toDouble();
 
@@ -72,14 +73,18 @@ void datetimeCallback(const char *topic, byte *payload, unsigned int length)
     }
     else
     {
-        Serial.println("Failed to parse datetime payload.");
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Failed to parse datetime payload.");
+        #endif
     }
 }
 
 void messageHandler(const char *topic, byte *payload, unsigned int length)
 {
-    Serial.print("Message arrived on topic: ");
-    Serial.println(topic);
+    #ifdef DEBUG
+        SERIAL_DEBUG.print("Message arrived on topic: ");
+        SERIAL_DEBUG.println(topic);
+    #endif
 
     // Manage callback for each topic subscribed
     if (String(topic) == MQTT_DATETIME_TOPIC)
@@ -88,7 +93,9 @@ void messageHandler(const char *topic, byte *payload, unsigned int length)
     }
     else
     {
-        Serial.println("No handler for this topic.");
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("No handler for this topic.");
+        #endif
     }
 }
 
@@ -115,7 +122,9 @@ void handle_change_wifi()
     server.send(200, "text/html", html_change);
     String new_ssid = server.arg("ssid");
     String new_psw = server.arg("psw");
-    Serial.println("New Wi-Fi credentials: " + new_ssid + " - " + new_psw);
+    #ifdef DEBUG
+        SERIAL_DEBUG.println("New Wi-Fi credentials: " + new_ssid + " - " + new_psw);
+    #endif
     preferences.begin("credentials", false);
     preferences.putString("ssid", new_ssid);
     preferences.putString("psw", new_psw);
@@ -184,7 +193,9 @@ void handleUpdateEnd()
 
 void setup()
 {
-    Serial.begin(115200);
+    #ifdef DEBUG
+        SERIAL_DEBUG.begin(SERIAL_DEBUG_SPEED);
+    #endif
     preferences.begin("credentials", false);
     ssid = preferences.getString("ssid", "");
     psw = preferences.getString("psw", "");
@@ -192,11 +203,15 @@ void setup()
 
     if (ssid == "" || psw == "")
     {
-        Serial.println("No values saved for ssid or password");
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("No values saved for ssid or password");
+        #endif
     }
     else
     {
-        Serial.println("Searching for Wi-Fi: " + ssid);
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Searching for Wi-Fi: " + ssid);
+        #endif
     }
     WiFi.mode(WIFI_AP_STA);
     WiFi.softAP(ap_ssid, ap_psw);
@@ -206,14 +221,18 @@ void setup()
     /*use mdns for host name resolution*/
     if (!MDNS.begin(hostname))
     {
-        Serial.println("Error setting up MDNS responder!");
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Error setting up MDNS responder!");
+        #endif
         while (1)
         {
             delay(10000);
             ESP.restart();
         }
     }
-    Serial.println("mDNS responder started");
+    #ifdef DEBUG
+        SERIAL_DEBUG.println("mDNS responder started");
+    #endif
     /*return index page which is stored in serverIndex */
     server.on("/", HTTP_GET, handle_homepage);
     server.on("/change-wifi", HTTP_GET, handle_change_wifi);
@@ -243,10 +262,14 @@ void loop()
         if (now - wifiReconnectAttempt > 5000)
         {
             wifiReconnectAttempt = now;
-            Serial.println("Reconnecting to WiFi...");
+            #ifdef DEBUG
+                SERIAL_DEBUG.println("Reconnecting to WiFi...");
+            #endif
             if (WiFi.begin(ssid, psw) == WL_CONNECTED)
             {
-                Serial.println("Connected to: " + ssid);
+                #ifdef DEBUG
+                    SERIAL_DEBUG.println("Connected to: " + ssid);
+                #endif
                 wifiReconnectAttempt = 0;
                 return;
             }
@@ -266,7 +289,9 @@ void loop()
                 if (mqtt.client.subscribe(MQTT_DATETIME_TOPIC, MQTT_QOS_SUB))
                 {
                     mqtt.client.setCallback(messageHandler);
-                    Serial.println("Subscribed to: " + String(MQTT_DATETIME_TOPIC));
+                    #ifdef DEBUG
+                        SERIAL_DEBUG.println("Subscribed to: " + String(MQTT_DATETIME_TOPIC));
+                    #endif
                 }
                 mqttReconnectAttempt = 0;
                 return;
@@ -290,7 +315,9 @@ void loop()
         uint8_t result = TRACER.readCoils(addr, &content);
 		resultsMsg = "";
 		resultsMsg += "Addr:" + addr_hex + "-Read_Coil-" + TRACER.exceptionDescription(result) + "\n";
-        Serial.println("Addr: " + addr_hex + " - Read_Coil\t\t- " + TRACER.exceptionDescription(result)) + "\n";
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Addr: " + addr_hex + " - Read_Coil\t\t- " + TRACER.exceptionDescription(result)) + "\n";
+        #endif
         lastAddress += "<br><br>Read_Coil - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
@@ -300,7 +327,9 @@ void loop()
 
         result = TRACER.readDiscreteInputs(addr, &content);
 		resultsMsg += "Addr:" + addr_hex + "-Read_Discrete_Input-" + TRACER.exceptionDescription(result) + "\n";
-        Serial.println("Addr: " + addr_hex + " - Read_Discrete_Input\t- " + TRACER.exceptionDescription(result));
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Addr: " + addr_hex + " - Read_Discrete_Input\t- " + TRACER.exceptionDescription(result));
+        #endif
         lastAddress += "Read_Discrete_Input - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
@@ -310,7 +339,9 @@ void loop()
 
         result = TRACER.readHoldingRegisters(addr, &content, 1);
 		resultsMsg += "Addr:" + addr_hex + "-Read_Holding_Registers-" + TRACER.exceptionDescription(result) + "\n";
-        Serial.println("Addr: " + addr_hex + " - Read_Holding_Registers\t- " + TRACER.exceptionDescription(result));
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Addr: " + addr_hex + " - Read_Holding_Registers\t- " + TRACER.exceptionDescription(result));
+        #endif
         lastAddress += "Read_Holding_Registers - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
@@ -320,7 +351,9 @@ void loop()
 
         result = TRACER.readInputRegisters(addr, &content, 1, false);
 		resultsMsg += "Addr:" + addr_hex + "-Read_Input_Registers-" + TRACER.exceptionDescription(result) + "\n";
-        Serial.println("Addr: " + addr_hex + " - Read_Input_Registers\t- " + TRACER.exceptionDescription(result));
+        #ifdef DEBUG
+            SERIAL_DEBUG.println("Addr: " + addr_hex + " - Read_Input_Registers\t- " + TRACER.exceptionDescription(result));
+        #endif
         lastAddress += "Read_Input_Registers - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
@@ -328,7 +361,9 @@ void loop()
         }
         delay(10);
 
-        // Serial.println("Addr: " + addr_hex);
+        #ifdef DEBUG
+            // SERIAL_DEBUG.println("Addr: " + addr_hex);
+        #endif
         addr++;
     }
 
@@ -343,19 +378,25 @@ void loop()
         }
         else
         {
-            Serial.println("Sending message:");
-            Serial.println(message);
+            #ifdef DEBUG
+                SERIAL_DEBUG.println("Sending message:");
+                SERIAL_DEBUG.println(message);
+            #endif
         }
 
         if (!mqtt.publishMessage(MQTT_PUBLISH_TOPIC, message, true))
         {
             stopReading = true;
-            Serial.println("!!! PUBLISH ERROR !!!");
+            #ifdef DEBUG
+                SERIAL_DEBUG.println("!!! PUBLISH ERROR !!!");
+            #endif
         }
         else
         {
             stopReading = false;
-            Serial.println("--- MESSAGE PUBLISHED ---");
+            #ifdef DEBUG
+                SERIAL_DEBUG.println("--- MESSAGE PUBLISHED ---");
+            #endif
             message = "";
         }
         xTimerStart(publishTimer, 0);

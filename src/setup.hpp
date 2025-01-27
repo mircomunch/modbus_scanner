@@ -1,3 +1,20 @@
+#define TEST
+
+#ifdef TEST
+    #define MQTT_AUTH
+    #define DEBUG
+    #define MQTT_TOPIC "modbus_scanner/test/"
+#else
+    #define MQTT_TOPIC "modbus_scanner/"
+#endif
+
+// Serial debug
+// #define DEBUG
+#ifdef DEBUG
+    #define SERIAL_DEBUG Serial
+    #define SERIAL_DEBUG_SPEED 115200
+#endif
+
 // ESP32 Name
 #define BOARD_ID "esp32_ccScanner"
 
@@ -19,7 +36,7 @@
 #define PUBLISH_PERIOD 2000
 
 // MQTT configurations
-#define MQTT_AUTH
+// #define MQTT_AUTH
 #ifdef MQTT_AUTH
 	#define MQTT_HOST "350fd0725fa14a069e04d387121e69f7.s2.eu.hivemq.cloud"
 	#define MQTT_PORT 8883
@@ -31,7 +48,6 @@
 	#define MQTT_PORT 1883
 #endif
 
-#define MQTT_TOPIC "modbus_scanner/"
 #define MQTT_PUBLISH_TOPIC MQTT_TOPIC "data"
 #define MQTT_DATETIME_TOPIC MQTT_TOPIC "datetime"
 #define MQTT_PUBLISH_MESSAGE_MAX_SIZE 65536/2 // MQTT publish max size = 256MB
