@@ -7,12 +7,12 @@ class MQTT
 	WiFiClientSecure _securedClient;
 	WiFiClient _unsecuredClient;
 	String _board_id;
-	char* _host;
+	char *_host;
 	uint16_t _port;
 	int _msg_size;
 	bool _cert_en;
-	char* _user;
-	char* _psw;
+	char *_user;
+	char *_psw;
 
 public:
 	PubSubClient client;
@@ -20,7 +20,7 @@ public:
 	MQTT(String board_id, char* host, uint16_t port, int msg_size);
 	MQTT(String board_id, char* host, uint16_t port, int msg_size, bool cert_en, char* user, char* psw);
     // void reconnect();
-    boolean reconnect();
+    bool reconnect();
 	bool publishMessage(const char *topic, String payload, boolean retained);
 
 };

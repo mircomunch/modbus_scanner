@@ -56,6 +56,7 @@ const char html_home[] PROGMEM = R"rawliteral(
     <h4>Wi-Fi status: {{plh_wifi_status}}</h4>
 	<h4>Current time: {{plh_current_time}}</h4>
 	<h4>Last address read: {{plh_last_address}}</h4>
+    <h4>Last power: {{plh_last_power}}</h4>
 	<a href="/" class="button">Refresh</a>
 	
 	<hr>
@@ -75,7 +76,7 @@ const char html_home[] PROGMEM = R"rawliteral(
 	<hr>
 
 	<h2>Update Firmware</h2>
-	<p>Note: Update a fimrware with the Over-the-air feature in order to keep it maintainable</p><br>
+	<p>Note: Update a firmware with the Over-the-air feature in order to keep it maintainable</p><br>
 	
 	<form method='POST' enctype='multipart/form-data' id='upload-form'>
 		<input type='file' id="file" name='update'><br><br>

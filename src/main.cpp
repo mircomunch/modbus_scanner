@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <solarModbus.hpp>
+#include <powerReader.hpp>
 #include <MQTT.hpp>
 #include <setup.hpp>
 #include <Preferences.h>
@@ -23,12 +24,19 @@ char _host_char[sizeof(MQTT_HOST)] = MQTT_HOST;
 #endif
 
 TimerHandle_t publishTimer;
-SolarModbus TRACER(PIN_RE_DE, PIN_DI, PIN_RO, nIter, TRACER_MODBUS_ID, TRACER_SERIAL_STREAM_SPEED, TRACER_SERIAL_STREAM, TRACER_SERIAL_STREAM);
+TimerHandle_t readPowerTimer;
+TimerHandle_t publishPowerTimer;
+SolarModbus TRACER(PIN_RE_DE, PIN_DI, PIN_RO, READ_TENTATIVE, TRACER_MODBUS_ID, TRACER_SERIAL_STREAM_SPEED, TRACER_SERIAL_STREAM, TRACER_SERIAL_STREAM);
+PowerReader JSY_MK(JSY_PIN_TX, JSY_PIN_RX, JSY_SERIAL_STREAM_SPEED, JSY_MODBUS_ID, READ_TENTATIVE, JSY_SERIAL_STREAM, JSY_SERIAL_STREAM);
 
-String message = "";
+String mdbMessage = "";
+String pwrMessage = "";
 bool publishNow;
-uint16_t addr = 0x0000;
+bool publishPowerNow;
+bool readPowerNow;
+uint16_t addr = START_ADDR;
 bool stopReading = true;
+bool stopPwrReading = true;
 long mqttReconnectAttempt = 0;
 long wifiReconnectAttempt = 0;
 
@@ -44,10 +52,19 @@ const char *hostname = HOSTNAME;
 String wifiStatus = "-";
 String currentTime = "-";
 String lastAddress = "-";
+String lastPower = "-";
 
 void publishNowCallback()
 {
     publishNow = true;
+}
+void publishPowerNowCallback()
+{
+    publishPowerNow = true;
+}
+void readPowerNowCallback()
+{
+    readPowerNow = true;
 }
 
 void datetimeCallback(const char *topic, byte *payload, unsigned int length)
@@ -69,8 +86,11 @@ void datetimeCallback(const char *topic, byte *payload, unsigned int length)
     {
         setTime(seconds);
         stopReading = false;
-        xTimerStart(publishTimer, 0);
-    }
+		stopPwrReading = false;
+		xTimerStart(publishTimer, 0);
+		xTimerStart(publishPowerTimer, 0);
+		xTimerStart(readPowerTimer, 0);
+	}
     else
     {
         #ifdef DEBUG
@@ -111,7 +131,8 @@ void handle_homepage()
         String(day(currT)) + "/" + String(month(currT)) + "/" + String(year(currT));
     homepage.replace(plh_current_time, currentTime);
     homepage.replace(plh_last_address, lastAddress);
-    homepage.replace(plh_wifi_status, wifiStatus);
+	homepage.replace(plh_last_power, lastPower);
+	homepage.replace(plh_wifi_status, wifiStatus);
     server.sendHeader("Connection", "close");
     server.send(200, "text/html", homepage.c_str());
 }
@@ -191,7 +212,8 @@ void handleUpdateEnd()
     }
 }
 
-void setup()
+// SETUP
+void set()
 {
     #ifdef DEBUG
         SERIAL_DEBUG.begin(SERIAL_DEBUG_SPEED);
@@ -247,13 +269,19 @@ void setup()
         server.send_P(200, "image/x-icon", favicon_ico_gz, favicon_ico_gz_len); });
 
     server.begin();
+	JSY_MK.begin();
 
-    // Start timer
+	// Start timer
     publishTimer = xTimerCreate("publishTimer", pdMS_TO_TICKS(PUBLISH_PERIOD), pdFALSE, (void *)0,
                                 reinterpret_cast<TimerCallbackFunction_t>(publishNowCallback));
+    publishPowerTimer = xTimerCreate("publishPowerTimer", pdMS_TO_TICKS(PUBLISH_PERIOD), pdFALSE, (void *)0,
+                                reinterpret_cast<TimerCallbackFunction_t>(publishPowerNowCallback));
+    readPowerTimer = xTimerCreate("readPowerTimer", pdMS_TO_TICKS(READ_POWER_PERIOD), pdFALSE, (void *)0,
+                                reinterpret_cast<TimerCallbackFunction_t>(readPowerNowCallback));
 }
 
-void loop()
+// LOOP
+void exec()
 {
     // WiFi reconnect logic
     if (WiFi.status() != WL_CONNECTED)
@@ -308,9 +336,10 @@ void loop()
     String addr_hex = "0x" + String(_addr_hex);
     lastAddress = addr_hex;
 	String resultsMsg = "";
+	String resultsPwrMsg = "";
 
-	if (addr <= 0xFFFF & !stopReading & message.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
-    {
+	if (addr <= 0xFFFF & !stopReading & mdbMessage.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
+	{
         uint16_t content = 0x0000;
         uint8_t result = TRACER.readCoils(addr, &content);
 		resultsMsg = "";
@@ -321,7 +350,7 @@ void loop()
         lastAddress += "<br><br>Read_Coil - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
-            message += String((int)now()) + "," + String(addr_hex) + ",Read_Coil,fn_1," + String(content) + "\n";
+            mdbMessage += String((int)now()) + "," + String(addr_hex) + ",Read_Coil,fn_1," + String(content) + "\n";
         }
         delay(10);
 
@@ -333,7 +362,7 @@ void loop()
         lastAddress += "Read_Discrete_Input - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
-            message += String((int)now()) + "," + String(addr_hex) + ",Read_Discrete_Input,fn_2," + String(content) + "\n";
+            mdbMessage += String((int)now()) + "," + String(addr_hex) + ",Read_Discrete_Input,fn_2," + String(content) + "\n";
         }
         delay(10);
 
@@ -345,7 +374,7 @@ void loop()
         lastAddress += "Read_Holding_Registers - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
-            message += String((int)now()) + "," + String(addr_hex) + ",Read_Holding_Registers,fn_3," + String(content) + "\n";
+            mdbMessage += String((int)now()) + "," + String(addr_hex) + ",Read_Holding_Registers,fn_3," + String(content) + "\n";
         }
         delay(10);
 
@@ -357,7 +386,7 @@ void loop()
         lastAddress += "Read_Input_Registers - " + TRACER.exceptionDescription(result) + "<br>";
 		if (result == 0)
         {
-            message += String((int)now()) + "," + String(addr_hex) + ",Read_Input_Registers,fn_4," + String(content) + "\n";
+            mdbMessage += String((int)now()) + "," + String(addr_hex) + ",Read_Input_Registers,fn_4," + String(content) + "\n";
         }
         delay(10);
 
@@ -372,19 +401,19 @@ void loop()
     {
         publishNow = false;
 
-        if (message.isEmpty())
+        if (mdbMessage.isEmpty())
         {
-            message = String((int)now()) + "," + String(addr_hex) + ",NO_NEW_DATA," + resultsMsg;
+            mdbMessage = String((int)now()) + "," + String(addr_hex) + ",NO_NEW_DATA," + resultsMsg;
         }
         else
         {
             #ifdef DEBUG
-                SERIAL_DEBUG.println("Sending message:");
-                SERIAL_DEBUG.println(message);
+                SERIAL_DEBUG.println("Sending mdbMessage:");
+                SERIAL_DEBUG.println(mdbMessage);
             #endif
         }
 
-        if (!mqtt.publishMessage(MQTT_PUBLISH_TOPIC, message, true))
+        if (!mqtt.publishMessage(MQTT_PUBLISH_TOPIC, mdbMessage, true))
         {
             stopReading = true;
             #ifdef DEBUG
@@ -397,8 +426,114 @@ void loop()
             #ifdef DEBUG
                 SERIAL_DEBUG.println("--- MESSAGE PUBLISHED ---");
             #endif
-            message = "";
+            mdbMessage = "";
         }
         xTimerStart(publishTimer, 0);
     }
+
+	if (readPowerNow & !stopPwrReading & pwrMessage.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
+	{
+		
+		// uint8_t result = JSY_MK.test();
+		// if (result == 0)
+		// {
+			pwrMessage += String((int)now()) + ",";
+			float voltage, current, power, energy, powerFactor, powerDirection, frequency;
+			
+			uint8_t result = JSY_MK.readVoltage(JSY_CLAMP, &voltage);
+			if (result == 0)
+			{
+				pwrMessage += String(voltage);
+			}
+			pwrMessage += ",";
+			result = JSY_MK.readCurrent(JSY_CLAMP, &current);
+			if (result == 0)
+			{
+				pwrMessage += String(current);
+			}
+			pwrMessage += ",";
+			result = JSY_MK.readPower(JSY_CLAMP, &power);
+			resultsPwrMsg = JSY_MK.exceptionDescription(result);
+			if (result == 0)
+			{
+				pwrMessage += String(power);
+				lastPower = String(power);
+			}
+			else {
+				lastPower = resultsPwrMsg;
+			}
+			pwrMessage += ",";
+			result = JSY_MK.readEnergy(JSY_CLAMP, &energy);
+			if (result == 0)
+			{
+				pwrMessage += String(energy);
+			}
+			pwrMessage += ",";
+			result = JSY_MK.readPowerfactor(JSY_CLAMP, &powerFactor);
+			if (result == 0)
+			{
+				pwrMessage += String(powerFactor);
+			}
+			pwrMessage += ",";
+			result = JSY_MK.readPowerdirection(&powerDirection);
+			if (result == 0)
+			{
+				pwrMessage += String(powerDirection);
+			}
+			pwrMessage += ",";
+			result = JSY_MK.readFrequency(&frequency);
+			if (result == 0)
+			{
+				pwrMessage += String(frequency);
+			}
+			pwrMessage += "\n";
+		// }
+		// else {
+		// 	resultsPwrMsg = JSY_MK.exceptionDescription(result);
+		// 	lastPower = resultsPwrMsg;
+		// }
+	}
+    
+	if (publishPowerNow || pwrMessage.length() >= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.7)
+    {
+		publishPowerNow = false;
+
+		if (pwrMessage.isEmpty())
+		{
+			pwrMessage = String((int)now()) + ",NO_NEW_DATA," + resultsPwrMsg;
+		}
+        else
+        {
+			#ifdef DEBUG
+            SERIAL_DEBUG.println("Sending pwrMessage:");
+            SERIAL_DEBUG.println(pwrMessage);
+			#endif
+        }
+
+		if (!mqtt.publishMessage(MQTT_PUBLISH_POWER_TOPIC, pwrMessage, true))
+		{
+            stopPwrReading = true;
+			#ifdef DEBUG
+            SERIAL_DEBUG.println("!!! PUBLISH POWER ERROR !!!");
+			#endif
+        }
+        else
+        {
+            stopPwrReading = false;
+            #ifdef DEBUG
+            SERIAL_DEBUG.println("--- MESSAGE POWER PUBLISHED ---");
+            #endif
+			pwrMessage = "";
+		}
+        xTimerStart(publishPowerTimer, 0);
+    }
 }
+
+// Standard loop and setup with loop inside for better watchdog management
+void setup() {
+    set();
+    while(1) {
+        exec();
+    }
+}
+void loop() {}
