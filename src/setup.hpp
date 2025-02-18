@@ -1,4 +1,4 @@
-// #define TEST
+#define TEST
 #define START_ADDR 0x47AF
 
 #ifdef TEST

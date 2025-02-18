@@ -434,9 +434,9 @@ void exec()
 	if (readPowerNow & !stopPwrReading & pwrMessage.length() <= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.8)
 	{
 		
-		// uint8_t result = JSY_MK.test();
-		// if (result == 0)
-		// {
+		uint8_t result = JSY_MK.test();
+		if (result == 0)
+		{
 			pwrMessage += String((int)now()) + ",";
 			float voltage, current, power, energy, powerFactor, powerDirection, frequency;
 			
@@ -487,11 +487,11 @@ void exec()
 				pwrMessage += String(frequency);
 			}
 			pwrMessage += "\n";
-		// }
-		// else {
-		// 	resultsPwrMsg = JSY_MK.exceptionDescription(result);
-		// 	lastPower = resultsPwrMsg;
-		// }
+		}
+		else {
+			resultsPwrMsg = JSY_MK.exceptionDescription(result);
+			lastPower = resultsPwrMsg;
+		}
 	}
     
 	if (publishPowerNow || pwrMessage.length() >= MQTT_PUBLISH_MESSAGE_MAX_SIZE * 0.7)
